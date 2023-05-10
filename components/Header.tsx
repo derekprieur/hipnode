@@ -1,3 +1,5 @@
+'use client'
+
 import React from 'react'
 
 interface HeaderProps {
@@ -6,7 +8,7 @@ interface HeaderProps {
 
 const Header = ({ text }: HeaderProps) => {
     return (
-        <h3 className='text-textLight1 font-semibold text-lg max-w-sm'>{text}</h3>
+        <h3 className='text-textLight1 dark:text-textDark1 font-semibold text-lg lg:text-3xl max-w-sm'>{text}</h3>
     )
 }
 

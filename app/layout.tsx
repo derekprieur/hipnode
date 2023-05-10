@@ -1,4 +1,5 @@
 import './globals.css'
+import Providers from '../components/Providers'
 
 export const metadata = {
   title: 'Hipnode',
@@ -11,8 +12,12 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className='font-source-sans-pro'>
-      <body>{children}</body>
+    <html lang="en" className='font-source-sans-pro' suppressHydrationWarning>
+      <body>
+        <Providers>
+          {children}
+        </Providers>
+      </body>
     </html>
   )
 }
