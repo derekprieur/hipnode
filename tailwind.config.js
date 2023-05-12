@@ -25,6 +25,7 @@ module.exports = {
         textDark2: "#F4F6F8",
         textLight1: "#3F4354",
         textAlt1: "#FF6934",
+        textAlt2: "#5D95E8",
       },
     },
   },
