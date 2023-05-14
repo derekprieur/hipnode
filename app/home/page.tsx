@@ -27,9 +27,9 @@ const Home = () => {
       <Navbar />
       <div className="p-5 md:p-10 bg-backgroundLight1 dark:bg-backgroundDark1 h-max sm:h-screen flex flex-col md:flex-row justify-between">
         <div className="flex flex-col gap-5">
-          <div className="flex md:flex-col bg-white dark:bg-backgroundDark2 p-[10px] rounded-[10px] justify-between">
+          <div className="flex md:flex-col bg-white dark:bg-backgroundDark2 p-[10px] rounded-[10px] justify-between gap-[10px]">
             {sortTypes.map((sortType, index) => (
-              <SortCard key={index} text={sortType.text} icon={sortType.icon} />
+              <SortCard key={index} sortType={sortType} />
             ))}
           </div>
           <div className="hidden md:flex md:flex-col bg-white dark:bg-backgroundDark2 p-[10px] md:p-5 rounded-[10px] justify-between">
@@ -45,12 +45,7 @@ const Home = () => {
         </div>
         <div>
           <div className="flex p-[14px] bg-white dark:bg-backgroundDark2 mt-5 rounded-[10px] gap-[10px] justify-between">
-            <Image
-              src="/assets/avatar-rounded.png"
-              width={30}
-              height={30}
-              alt="avatar"
-              className="object-contain shrink-0"
+            <Image src="/assets/avatar-rounded.png" width={30} height={30} alt="avatar" className="object-contain shrink-0"
             />
             <input
               type="text"

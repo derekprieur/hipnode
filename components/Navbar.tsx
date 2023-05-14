@@ -40,7 +40,6 @@ const Navbar = (props: Props) => {
                     })}
                 </div>
             </div>
-            {/* <DarkModeToggle /> */}
             <div className='hidden lg:flex max-w-[440px] flex-1'>
                 <SearchInput />
             </div>
@@ -55,6 +54,7 @@ const Navbar = (props: Props) => {
                     <Image src={'/assets/avatar.png'} alt={'avatar'} width={36} height={36} className='object-contain' />
                     <p className='hidden lg:flex text-textLight4 font-bold'>AR. Jakir</p>
                     <Image src={'/assets/arrow-down.png'} alt={'arrow-down'} width={20} height={20} className='object-contain hidden lg:flex' />
+                    <DarkModeToggle />
                 </div>
             </div>
         </div>

@@ -78,16 +78,19 @@ export const businessTypes = [
 
 export const sortTypes = [
   {
-    text: "Newest",
+    text: "Newest posts",
     icon: "/assets/newest-sort.png",
+    subtext: 'Find the latest update'
   },
   {
-    text: "Popular",
+    text: "Popular today",
     icon: "/assets/popular-sort.png",
+    subtext: 'Shots featured today by curators'
   },
   {
     text: "Following",
     icon: "/assets/following-sort.png",
+    subtext: 'Explore from your favorite person'
   },
 ];
 
