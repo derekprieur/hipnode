@@ -200,7 +200,7 @@ export const navOptions = [
   },
   {
     type: "Podcast",
-    icon: "/assets/nav-podcast.png",
+    icon: "/assets/nav-podcasts.png",
   },
   {
     type: "Interview",

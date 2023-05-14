@@ -16,7 +16,6 @@ type Props = {
 }
 
 const PostCard = ({ post }: Props) => {
-    console.log(post, 'post')
     return (
         <div className='p-[14px] bg-white dark:bg-backgroundDark2 rounded-[10px] flex items-start'>
             <Image src={post.image} alt='post' width={56} height={56} className='object-contain shrink-0' />

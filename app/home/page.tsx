@@ -30,7 +30,7 @@ const Home = () => {
                     <p className='text-[10px] text-textLight3'>See more</p>
                     <Image src='/assets/arrow.png' alt='arrow' width={12} height={10} className='object-contain' />
                 </div>
-                <div className='bg-white rounded-[10px] p-5 mt-[22px]'>
+                <div className='bg-white dark:bg-backgroundDark2 rounded-[10px] p-5 mt-[22px]'>
                     <Title title='Meetups' />
                     <div className='flex flex-col gap-5 mt-5'>
                         {meetups.map((meetup, index) => (
@@ -38,7 +38,7 @@ const Home = () => {
                         ))}
                     </div>
                 </div>
-                <div className='bg-white rounded-[10px] p-5 mt-5'>
+                <div className='bg-white dark:bg-backgroundDark2 rounded-[10px] p-5 mt-5 mb-24'>
                     <Title title='Podcasts' />
                     <div className='flex flex-col gap-5 mt-5'>
                         {podcasts.map((podcast, index) => (
