@@ -27,6 +27,7 @@ module.exports = {
         textLight1: "#3F4354",
         textLight2: "#858EAD",
         textLight3: "#97989D",
+        textLight4: "#192351",
         textAlt1: "#FF6934",
         textAlt2: "#5D95E8",
       },

@@ -14,3 +14,4 @@ export { default as Title } from "./Title";
 export { default as MeetupCard } from "./MeetupCard";
 export { default as MobileNav } from "./MobileNav";
 export { default as PodcastCard } from "./PodcastCard";
+export { default as SearchInput } from "./SearchInput";
