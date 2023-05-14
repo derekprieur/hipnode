@@ -15,3 +15,4 @@ export { default as MeetupCard } from "./MeetupCard";
 export { default as MobileNav } from "./MobileNav";
 export { default as PodcastCard } from "./PodcastCard";
 export { default as SearchInput } from "./SearchInput";
+export { default as TagCard } from "./TagCard";
