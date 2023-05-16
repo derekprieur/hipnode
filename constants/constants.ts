@@ -221,30 +221,69 @@ export const popularTags = [
     type: "Javascript",
     image: "/assets/tag1.png",
     count: 82645,
+    group: '/assets/group1.png'
   },
   {
     type: "bitcoin",
     image: "/assets/tag2.png",
     count: 65523,
+    group: '/assets/group2.png'
   },
   {
     type: "design",
     image: "/assets/tag3.png",
     count: 51354,
+    group: '/assets/group3.png'
   },
   {
     type: "blogging",
     image: "/assets/tag4.png",
     count: 48029,
+    group: '/assets/group4.png'
   },
   {
     type: "tutorial",
     image: "/assets/tag5.png",
     count: 51354,
+    group: '/assets/group1.png'
   },
   {
     type: "seo",
     image: "/assets/tag6.png",
     count: 82645,
+    group: '/assets/group2.png'
   },
 ];
+
+export const messages = [
+  {
+    name: "Wade Warren",
+    image: "/assets/user1.png",
+    message: "Congrats on your work anniversary!",
+    time: "20 minutes ago",
+  },
+  {
+    name: "Robert Fox",
+    image: "/assets/user2.png",
+    message: "Congrats on your work anniversary!",
+    time: "3 days ago",
+  },
+  {
+    name: "Marvin McKinney",
+    image: "/assets/user3.png",
+    message: "Congrats on your work anniversary!",
+    time: "9 hours ago",
+  },
+  {
+    name: "Cameron",
+    image: "/assets/user1.png",
+    message: "Congrats on your work anniversary!",
+    time: "20 minutes ago",
+  },
+  {
+    name: "Cameron",
+    image: "/assets/user2.png",
+    message: "Congrats on your work anniversary!",
+    time: "3 days ago",
+  }
+]

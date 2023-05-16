@@ -18,7 +18,7 @@ const SortCard = ({ sortType }: Props) => {
             <p className='flex lg:hidden'>{sortType.text.split(' ')[0]}</p>
             <div className='hidden lg:flex flex-col gap-[2px]'>
                 <p>{sortType.text}</p>
-                <p className='text-[9px] font-normal'>{sortType.subtext}</p>
+                <p className='text-[9px] font-normal dark:text-textLight3'>{sortType.subtext}</p>
             </div>
         </div>
     )

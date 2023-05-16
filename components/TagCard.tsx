@@ -1,5 +1,6 @@
 import Image from "next/image";
 import React from "react";
+import { useTheme } from "next-themes";
 
 type Props = {
   tag: {
@@ -10,18 +11,22 @@ type Props = {
 };
 
 const TagCard = ({ tag }: Props) => {
+  const { theme } = useTheme();
+
+  const iconSrc = theme === 'dark' ? tag.image.replace('.png', '-dark.png') : tag.image;
+
   return (
     <div className="flex gap-[10px]">
       <Image
-        src={tag.image}
+        src={iconSrc}
         width={32}
         height={32}
         alt="tag"
         className="object-contain"
       />
       <div className="flex flex-col text-textLight2">
-        <p className="font-semibold text-xs">#{tag.type}</p>
-        <p className="text-[10px]">{tag.count} posted by this tag</p>
+        <p className="font-semibold text-xs dark:text-textDark1">#{tag.type}</p>
+        <p className="text-[10px] dark:text-textLight3">{tag.count} posted by this tag</p>
       </div>
     </div>
   );

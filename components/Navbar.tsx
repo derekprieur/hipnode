@@ -2,8 +2,8 @@ import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import { useTheme } from 'next-themes'
 
-import { DarkModeToggle, SearchInput } from './../components'
-import { navOptions } from '../constants/constants'
+import { DarkModeToggle, MessageCard, SearchInput, Title } from './../components'
+import { messages, navOptions } from '../constants/constants'
 
 type Props = {}
 
@@ -11,6 +11,11 @@ const Navbar = (props: Props) => {
     const { theme } = useTheme();
     const [logoSrc, setLogoSrc] = useState<string | null>(null);
     const [largeLogoSrc, setLargeLogoSrc] = useState<string | null>(null);
+    const [showingMessages, setShowingMessages] = useState(true)
+
+    const toggleMessages = () => {
+        setShowingMessages(!showingMessages)
+    }
 
     useEffect(() => {
         setLogoSrc(
@@ -44,15 +49,30 @@ const Navbar = (props: Props) => {
                 <SearchInput />
             </div>
             <div className='flex gap-5 lg:gap-[25px] shrink-0 '>
-                <div className='flex items-center lg:p-[10px] lg:bg-backgroundLight3 lg:rounded-[7px]'>
-                    <Image src={'/assets/message.png'} alt={'message'} width={20} height={20} className='object-contain' />
+                <div className='flex items-center lg:p-[10px] lg:bg-backgroundLight3 lg:dark:bg-backgroundDark3 lg:rounded-[7px] relative'>
+                    <Image src={'/assets/message.png'} alt={'message'} width={20} height={20} className='object-contain flex dark:hidden cursor-pointer' onClick={toggleMessages} />
+                    <Image src={'/assets/message-dark.png'} alt={'message'} width={20} height={20} className='object-contain hidden dark:flex cursor-pointer' onClick={toggleMessages} />
+                    {showingMessages &&
+                        <div className="bg-white dark:bg-backgroundDark3 absolute -left-[158px] lg:-left-[148px] w-[336px] top-12 rounded-lg p-5">
+                            <div className="mb-5">
+                                <Title title="Messages" />
+                            </div>
+                            <div className="flex flex-col gap-5">
+                                {messages.map((message, index) => (
+                                    <MessageCard key={index} message={message} />
+                                ))}
+                            </div>
+                            <button className='w-full text-center mt-5 text-textAlt3 font-semibold text-sm'>See all in Messenger</button>
+                        </div>
+                    }
                 </div>
-                <div className='flex items-center lg:p-[10px] lg:bg-backgroundLight3 lg:rounded-[7px]'>
-                    <Image src={'/assets/bell.png'} alt={'bell'} width={20} height={20} className='object-contain' />
+                <div className='flex items-center lg:p-[10px] lg:bg-backgroundLight3 lg:dark:bg-backgroundDark3 lg:rounded-[7px]'>
+                    <Image src={'/assets/bell.png'} alt={'bell'} width={20} height={20} className='object-contain flex dark:hidden' />
+                    <Image src={'/assets/bell-dark.png'} alt={'bell'} width={20} height={20} className='object-contain hidden dark:flex' />
                 </div>
                 <div className='flex items-center gap-[14px]'>
                     <Image src={'/assets/avatar.png'} alt={'avatar'} width={36} height={36} className='object-contain' />
-                    <p className='hidden lg:flex text-textLight4 font-bold'>AR. Jakir</p>
+                    <p className='hidden lg:flex text-textLight4 dark:text-textDark1 font-bold'>AR. Jakir</p>
                     <Image src={'/assets/arrow-down.png'} alt={'arrow-down'} width={20} height={20} className='object-contain hidden lg:flex' />
                     <DarkModeToggle />
                 </div>
