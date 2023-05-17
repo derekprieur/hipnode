@@ -2,8 +2,8 @@ import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import { useTheme } from 'next-themes'
 
-import { DarkModeToggle, MessageCard, NotificationType, SearchInput, Title } from './../components'
-import { messages, navOptions, notificationTypes } from '../constants/constants'
+import { DarkModeToggle, MessageCard, NotificationCard, NotificationType, SearchInput, Title } from './../components'
+import { messages, navOptions, notificationTypes, notifications } from '../constants/constants'
 
 type Props = {}
 
@@ -90,6 +90,11 @@ const Navbar = (props: Props) => {
                                 ))}
                             </div>
                             <div className='border border-backgroundLight1' />
+                            <div className='flex flex-col mt-[19px] gap-5'>
+                                {notifications.map((notification, index) => (
+                                    <NotificationCard key={index} notification={notification} />
+                                ))}
+                            </div>
                         </div>
                     }
                 </div>

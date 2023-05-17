@@ -36,7 +36,8 @@ module.exports = {
         textAlt4: "#0ECC8D",
       },
       boxShadow: {
-        meetup: '0px 6px 6px 2px rgba(71, 153, 235, 0.04)'
+        meetup: '0px 6px 6px 2px rgba(71, 153, 235, 0.04)',
+        notification: '0px 2px 8px rgba(0, 0, 0, 0.08)',
       },
     },
   },

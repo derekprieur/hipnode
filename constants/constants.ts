@@ -305,3 +305,28 @@ export const notificationTypes = [
     image: "/assets/mention.png",
   }
 ]
+
+export const notifications = [
+  {
+    name: "Catalin Pit",
+    image: "/assets/user1.png",
+    type: 'comment',
+    title: 'Hipnode. Book Giveaway: The Standout Developer by Randall Kanna',
+    date: '22Feb, 3:26pm',
+    message: 'Great ebook & giveaway!',
+  },
+  {
+    name: "Jubed Ahmed",
+    image: "/assets/user2.png",
+    type: 'publish',
+    title: 'Best Color Palette Generators For UI Designers And Developers',
+    date: '17Feb, 10:48pm',
+  },
+  {
+    name: "Tushar Srivastava",
+    image: "/assets/user3.png",
+    type: 'reaction',
+    title: '5 Key UI Design Principles For Beginners',
+    date: '13Feb, 1:54am',
+  }
+]
