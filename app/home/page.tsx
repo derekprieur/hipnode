@@ -24,6 +24,7 @@ import {
 } from "../../constants/constants";
 
 const Home = () => {
+  const [showChatBox, setShowChatBox] = useState(false);
 
   return (
     <div>
@@ -106,7 +107,7 @@ const Home = () => {
             </div>
           </div>
         </div>
-        <ChatBox />
+        {showChatBox && <ChatBox />}
       </div>
       <MobileNav />
     </div>

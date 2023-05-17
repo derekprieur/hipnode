@@ -19,3 +19,6 @@ export { default as TagCard } from "./TagCard";
 export { default as GroupCard } from "./GroupCard";
 export { default as MessageCard } from "./MessageCard";
 export { default as ChatBox } from "./ChatBox";
+export { default as ChatMessage } from "./ChatMessage";
+export { default as NotificationType } from "./NotificationType";
+export { default as NotificationCard } from "./NotificationCard";

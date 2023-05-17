@@ -22,6 +22,7 @@ module.exports = {
         backgroundAlt1: "#FF8F67",
         backgroundAlt2: "#FF6934",
         backgroundAlt3: "#FFECE6",
+        backgroundAlt4: "#EBF2FC",
         textDark1: "#F7F7F7",
         textDark2: "#F4F6F8",
         textDark3: "##C5D0E6",

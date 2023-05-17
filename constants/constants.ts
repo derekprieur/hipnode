@@ -287,3 +287,21 @@ export const messages = [
     time: "3 days ago",
   }
 ]
+
+export const notificationTypes = [
+  {
+    type: "All notifications",
+  },
+  {
+    type: "Reactions",
+    image: "/assets/reaction.png",
+  },
+  {
+    type: "Comments",
+    image: "/assets/comment.png",
+  },
+  {
+    type: "Mentions",
+    image: "/assets/mention.png",
+  }
+]
