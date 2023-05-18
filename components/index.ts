@@ -22,3 +22,4 @@ export { default as ChatBox } from "./ChatBox";
 export { default as ChatMessage } from "./ChatMessage";
 export { default as NotificationType } from "./NotificationType";
 export { default as NotificationCard } from "./NotificationCard";
+export { default as SettingsCard } from "./SettingsCard";

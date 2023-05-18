@@ -10,7 +10,7 @@ type Props = {
 
 const NotificationType = ({ notificationType }: Props) => {
     return (
-        <div className='flex items-center gap-[9px] shrink-0 text-textLight3 font-semibold text-sm'>
+        <div className='flex items-center gap-[9px] shrink-0 text-textLight3 font-semibold text-sm lg:text-base'>
             {notificationType.image && <Image src={notificationType.image} alt={notificationType.type} width={20} height={20} className='object-contain' />}
             <p>{notificationType.type}</p>
         </div>
