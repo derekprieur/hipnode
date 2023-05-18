@@ -25,7 +25,7 @@ module.exports = {
         backgroundAlt4: "#EBF2FC",
         textDark1: "#F7F7F7",
         textDark2: "#F4F6F8",
-        textDark3: "##C5D0E6",
+        textDark3: "#C5D0E6",
         textLight1: "#3F4354",
         textLight2: "#858EAD",
         textLight3: "#97989D",
