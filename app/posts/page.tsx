@@ -1,7 +1,9 @@
 'use client'
 
 import React from 'react'
-import { Navbar } from '../../components'
+import { MobileNav, Navbar } from '../../components'
+import Image from 'next/image'
+import { additionalPosts, postContent, postDetails, postTags } from '../../constants/post'
 
 type Props = {}
 
@@ -9,6 +11,70 @@ const Posts = (props: Props) => {
     return (
         <div>
             <Navbar />
+            <div className="p-5 lg:px-10 bg-backgroundLight1 dark:bg-backgroundDark1 h-max sm:h-screen md:h-max lg:h-screen flex flex-col lg:flex-row justify-between gap-5">
+                <div className='flex flex-col lg:flex-row gap-5'>
+                    <div className='flex flex-col gap-5 lg:flex-row-reverse lg:items-start'>
+                        <div>
+                            <Image src='/assets/post-header.png' alt='post' width={335} height={117} className='object-contain w-full' />
+                            <div className='flex flex-col bg-white dark:bg-backgroundDark2 p-5 lg:p-[30px] pl-[61px] lg:pl-[77px] gap-[14px] rounded-b-2xl'>
+                                <h2 className='text-textLight1 dark:text-textDark1 font-semibold lg:text-[26px]'>OnePay - Online Payment Processing Web App</h2>
+                                <div className='flex gap-6'>
+                                    {postTags.map((tag, index) => (
+                                        <p key={index} className='text-textAlt5 text-xs lg:text-base'>#{tag}</p>
+                                    ))}
+                                </div>
+                                {postContent.map((content, index) => (
+                                    <p key={index} className='text-textLight3 text-xs lg:text-base'>{content}</p>
+                                ))}
+                                <div className='mt-[16px] flex gap-4'>
+                                    <Image src='/assets/user1.png' alt='user' width={40} height={40} className='object-contain flex lg:hidden' />
+                                    <Image src='/assets/user1.png' alt='user' width={44} height={44} className='object-contain hidden lg:flex' />
+                                    <div className='flex border px-4 py-2 rounded-full flex-1 justify-between'>
+                                        <input type="text" placeholder='Say something...' className='placeholder:text-textDark3 bg-transparent flex lg:hidden w-full outline-none' />
+                                        <input type="text" placeholder='Say something nice to follownishant...' className='placeholder:text-textDark3 bg-transparent hidden lg:flex w-full outline-none' />
+                                        <Image src='/assets/smiley.png' alt='smiley' width={24} height={24} className='object-contain' />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className='flex flex-col bg-white dark:bg-backgroundDark2 p-5 rounded-2xl gap-5 shrink-0 lg:min-w-[210px]'>
+                            {postDetails.map((detail, index) => (
+                                <div key={index} className='flex gap-[14px] items-center'>
+                                    <div className='py-[5px] px-1 bg-backgroundLight1 dark:bg-backgroundDark3 rounded-md'>
+                                        <Image src={detail.icon} alt={detail.type} width={20} height={20} className='object-contain' />
+                                    </div>
+                                    <p className='text-textLight3 lg:font-semibold'>{detail?.count} {detail?.type}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                    <div className='flex flex-col gap-5'>
+                        <div className='flex flex-col bg-white dark:bg-backgroundDark2 py-[30px] px-[25px] items-center rounded-2xl'>
+                            <Image src='/assets/user1.png' alt='user' width={100} height={100} className='object-contain' />
+                            <h2 className='font-semibold text-[26px] mt-5 text-textLight1 dark:text-textDark1'>Mansurul Haque</h2>
+                            <p className='mt-[2px] text-textLight3 font-semibold'>Web Developer</p>
+                            <button className='p-[10px] bg-backgroundAlt5 w-full mt-5 text-white font-semibold text-lg rounded-md'>Follow</button>
+                            <p className='mt-5 text-textLight3'>joined 6 months ago</p>
+                        </div>
+                        <div className='flex flex-col bg-white dark:bg-backgroundDark2 p-5 rounded-2xl mb-10 gap-[15px]'>
+                            <h3 className='text-textLight1 dark:text-textDark1 font-semibold text-lg'>More from Mansurul Haque</h3>
+                            <div className='border border-backgroundLight3 dark:border-backgroundDark4' />
+                            {additionalPosts.map((post, index) => (
+                                <div key={post.title + index} className='flex flex-col font-semibold text-xs'>
+                                    <p className='text-textLight1 dark:text-textDark1'>{post.title}</p>
+                                    <div className='flex mb-[15px]'>
+                                        {post.tags.map((tag, index) => (
+                                            <p key={index} className='text-textLight3'>#{tag} &nbsp;</p>
+                                        ))}
+                                    </div>
+                                    <div className='border border-backgroundLight3 dark:border-backgroundDark4' />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <MobileNav />
         </div>
     )
 }
