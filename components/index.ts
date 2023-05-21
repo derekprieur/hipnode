@@ -23,3 +23,5 @@ export { default as ChatMessage } from "./ChatMessage";
 export { default as NotificationType } from "./NotificationType";
 export { default as NotificationCard } from "./NotificationCard";
 export { default as SettingsCard } from "./SettingsCard";
+export { default as PostCommentCard } from "./PostCommentCard";
+export { default as Dropdown } from "./Dropdown";

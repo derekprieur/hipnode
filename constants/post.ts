@@ -42,28 +42,26 @@ export const additionalPosts = [
 export const postComments = [
     {
         name: 'Mishacreatrix',
-        avatar: '/assets/avatar.png',
+        avatar: '/assets/user1.png',
         date: 'Feb 01',
-        comment: "As an ex-dev, I believed nocode to be only useful for small prototypes or things like landing pages/portfolio pages etc. After tinkering around with Bubble for a bit, I now see that you can indeed build fully fledged apps! It is still not ideal, but I reckon nocode builders will only get more powerful as time goes by"
-    },
-    {
-        name: 'PB, Delwar',
-        avatar: '/assets/avatar.png',
+        comment: "As an ex-dev, I believed nocode to be only useful for small prototypes or things like landing pages/portfolio pages etc. After tinkering around with Bubble for a bit, I now see that you can indeed build fully fledged apps! It is still not ideal, but I reckon nocode builders will only get more powerful as time goes by",
+        reply: {
+            name: 'PB, Delwar',
+        avatar: '/assets/user1.png',
         date: 'Feb 01',
         comment: 'Yep 100% agreed! After tinkering around with Bubble for a bit, I now see that you can indeed build fully fledged apps!',
-        reply: true
+        }
     },
     {
         name: 'AR Jakir',
-        avatar: '/assets/avatar.png',
+        avatar: '/assets/user1.png',
         date: 'Feb 02',
-        comment: 'What a fantastic article! Thank you for putting so much work into writing this for us.'
-    },
-    {
-        name: 'PB, Delwar',
-        avatar: '/assets/avatar.png',
+        comment: 'What a fantastic article! Thank you for putting so much work into writing this for us.',
+        reply: {
+            name: 'PB, Delwar',
+        avatar: '/assets/user1.png',
         date: 'Feb 02',
         comment: 'Thanks AR Jakir',
-        reply: true
-    }
+        }
+    },
 ]

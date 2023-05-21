@@ -1,13 +1,14 @@
 'use client'
 
-import React from 'react'
-import { MobileNav, Navbar } from '../../components'
+import React, { useState } from 'react'
+import { MobileNav, Navbar, PostCommentCard } from '../../components'
 import Image from 'next/image'
-import { additionalPosts, postContent, postDetails, postTags } from '../../constants/post'
+import { additionalPosts, postComments, postContent, postDetails, postTags } from '../../constants/post'
 
 type Props = {}
 
 const Posts = (props: Props) => {
+    const [isFollowing, setIsFollowing] = useState(false)
     return (
         <div>
             <Navbar />
@@ -35,6 +36,16 @@ const Posts = (props: Props) => {
                                         <Image src='/assets/smiley.png' alt='smiley' width={24} height={24} className='object-contain' />
                                     </div>
                                 </div>
+                                <div className='hidden flex-col gap-5 lg:gap-[30px] lg:flex lg:mt-[30px]'>
+                                    {postComments.map((comment, index) => (
+                                        <div key={comment.avatar + index} className='flex flex-col gap-5'>
+                                            <PostCommentCard comment={comment} />
+                                            <div className='pl-16'>
+                                                <PostCommentCard comment={comment.reply} />
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         </div>
                         <div className='flex flex-col bg-white dark:bg-backgroundDark2 p-5 rounded-2xl gap-5 shrink-0 lg:min-w-[210px]'>
@@ -47,13 +58,29 @@ const Posts = (props: Props) => {
                                 </div>
                             ))}
                         </div>
+                        <div className='flex flex-col gap-5 lg:hidden'>
+                            {postComments.map((comment, index) => (
+                                <div key={comment.avatar + index} className='flex flex-col gap-5'>
+                                    <PostCommentCard comment={comment} />
+                                    <div className='pl-16'>
+                                        <PostCommentCard comment={comment.reply} />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                     <div className='flex flex-col gap-5'>
                         <div className='flex flex-col bg-white dark:bg-backgroundDark2 py-[30px] px-[25px] items-center rounded-2xl'>
                             <Image src='/assets/user1.png' alt='user' width={100} height={100} className='object-contain' />
                             <h2 className='font-semibold text-[26px] mt-5 text-textLight1 dark:text-textDark1'>Mansurul Haque</h2>
                             <p className='mt-[2px] text-textLight3 font-semibold'>Web Developer</p>
-                            <button className='p-[10px] bg-backgroundAlt5 w-full mt-5 text-white font-semibold text-lg rounded-md'>Follow</button>
+                            <button className={`p-[10px] border ${isFollowing ? 'bg-white dark:bg-transparent border-backgroundLight4 text-textLight3' : 'bg-backgroundAlt5 border-backgroundAlt5 text-white'} w-full mt-5 font-semibold text-lg rounded-md`} onClick={() => setIsFollowing(prev => !prev)}>{isFollowing ? 'Following' : 'Follow'}</button>
+                            {isFollowing && (
+                                <div className={`p-[10px] border border-backgroundAlt5 bg-backgroundAlt5 text-white w-full mt-5 font-semibold text-lg rounded-md flex justify-center`}>
+                                    <Image src='/assets/message-dark.png' alt='message' width={20} height={20} className='object-contain' />
+                                    <p className='ml-5'>Message</p>
+                                </div>
+                            )}
                             <p className='mt-5 text-textLight3'>joined 6 months ago</p>
                         </div>
                         <div className='flex flex-col bg-white dark:bg-backgroundDark2 p-5 rounded-2xl mb-10 gap-[15px]'>
