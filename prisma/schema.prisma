@@ -1,0 +1,14 @@
+datasource db {
+    provider = "mysql"
+    url      = env("mysql://dprieur123@gmail.com:Yankees123@localhost:3306/hipnode")
+}
+
+model User {
+    id       Int     @id @default(autoincrement())
+    email    String  @unique
+    password String?
+}
+
+generator client {
+    provider = "prisma-client-js"
+}

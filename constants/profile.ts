@@ -1,0 +1,1 @@
+export const categories =['Posts', 'Meetups', 'Podcasts', 'Interviews', 'History']

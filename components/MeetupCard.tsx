@@ -14,7 +14,7 @@ type Props = {
 
 const MeetupCard = ({ meetup }: Props) => {
     return (
-        <div className='flex gap-[14px]'>
+        <div className='flex gap-[14px] items-start'>
             <div className='border border-backgroundLight3 dark:border-backgroundDark2 py-1 px-[10px] rounded-md shadow-meetup flex flex-col items-center'>
                 <h3 className='text-textLight1 dark:text-textDark1 text-[14px] font-semibold uppercase'>{meetup.date.split(' ')[0]}</h3>
                 <h3 className='text-textAlt2 font-bold text-[26px]'>{meetup.date.split(' ')[1]}</h3>

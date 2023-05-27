@@ -25,6 +25,8 @@ module.exports = {
         backgroundAlt4: "#EBF2FC",
         backgroundAlt5: "#347AE2",
         backgroundAlt6: "#FF4401",
+        backgroundAlt7: "#FDF4EA",
+        backgroundAlt8: "#E0E2FD",
         textDark1: "#F7F7F7",
         textDark2: "#F4F6F8",
         textDark3: "#C5D0E6",
@@ -37,6 +39,7 @@ module.exports = {
         textAlt3: "#347AE2",
         textAlt4: "#0ECC8D",
         textAlt5: "#EC9F41",
+        textAlt6: "#6570F7",
       },
       boxShadow: {
         meetup: '0px 6px 6px 2px rgba(71, 153, 235, 0.04)',

@@ -3,6 +3,7 @@
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react'
+import axios from 'axios';
 
 import { DarkModeToggle, FeatureCard, Header, InputCard, SignupCard } from '../../components';
 import { features, signupOptions } from '../../constants/constants';
@@ -11,6 +12,8 @@ import Link from 'next/link';
 const Signin = () => {
     const { theme } = useTheme();
     const [logoSrc, setLogoSrc] = useState<string | null>(null);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
     useEffect(() => {
         setLogoSrc(
@@ -22,8 +25,19 @@ const Signin = () => {
         return <div></div>;
     }
 
-    const handleClick = () => {
-        console.log("Next");
+    const handleClick = async () => {
+        try {
+            const response = await axios.post('/api/signin', {
+                email,
+                password,
+            });
+            const { token } = response.data;
+
+            console.log('User logged in successfully', token);
+
+        } catch (error) {
+            console.error('Failed to log in', error);
+        }
     }
 
     return (
