@@ -1,36 +1,28 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import bcrypt from 'bcrypt';
-import { PrismaClient } from '@prisma/client';
+// app/api/hello/route.ts
+import { PrismaClient } from "@prisma/client";
+import type { NextApiRequest, NextApiResponse } from 'next'
 
-const prisma = new PrismaClient();
+export async function POST(req: NextApiRequest, res: NextApiResponse) {
+  const prisma = new PrismaClient();
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === 'POST') {
-    const { email, password } = req.body;
+  try {
+    const newUser = await prisma.user.create({
+      data: {
+        email: req.body.email,
+        password: req.body.password,
+      },
+    });
 
-    try {
-      const user = await prisma.user.findUnique({
-        where: {
-          email: email,
-        },
-      });
-
-      if (!user) {
-        return res.status(400).json({ error: 'No user found for this email' });
-      }
-
-      const isPasswordValid = await bcrypt.compare(password, user.password);
-
-      if (!isPasswordValid) {
-        return res.status(400).json({ error: 'Incorrect password' });
-      }
-
-      res.status(200).json({ message: 'Logged in successfully' });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Unable to log in' });
-    }
-  } else {
-    res.status(400).json({ error: 'Invalid HTTP method' });
+    console.log(newUser, "newUser");
+    return new Response(JSON.stringify(newUser), {
+      status: 200,
+    });
+  } catch (error) {
+    console.log(error, "error");
+    return new Response(JSON.stringify(error), {
+      status: 500,
+    });
+  } finally {
+    await prisma.$disconnect();
   }
-};
+}

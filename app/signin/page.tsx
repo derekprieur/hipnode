@@ -12,8 +12,8 @@ import Link from 'next/link';
 const Signin = () => {
     const { theme } = useTheme();
     const [logoSrc, setLogoSrc] = useState<string | null>(null);
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [email, setEmail] = useState('dprieur123@gmail.com');
+    const [password, setPassword] = useState('test');
 
     useEffect(() => {
         setLogoSrc(
@@ -27,16 +27,10 @@ const Signin = () => {
 
     const handleClick = async () => {
         try {
-            const response = await axios.post('/api/signin', {
-                email,
-                password,
-            });
-            const { token } = response.data;
-
-            console.log('User logged in successfully', token);
-
+            const response = await axios.post('/api/signin', { email, password })
+            console.log(response);
         } catch (error) {
-            console.error('Failed to log in', error);
+            console.log(error);
         }
     }
 
