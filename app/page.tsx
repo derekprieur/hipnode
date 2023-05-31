@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
 
 import {
   MeetupCard,
@@ -19,12 +20,32 @@ import {
   meetups,
   podcasts,
   popularTags,
-  posts,
   sortTypes,
 } from "../constants/constants";
+import { useRouter } from "next/navigation";
 
 const Home = () => {
   const [showChatBox, setShowChatBox] = useState(false);
+  const router = useRouter();
+  const { data: session } = useSession();
+  const [posts, setPosts] = useState([])
+
+  const getPosts = async () => {
+    console.log("get posts");
+    try {
+      const response = await fetch("/api/posts");
+      const data = await response.json();
+      console.log(data, "data");
+      setPosts(data);
+    } catch (error) {
+      console.log(error, "error");
+    }
+  }
+
+  useEffect(() => {
+    getPosts();
+  }, [])
+
 
   return (
     <div>
@@ -69,7 +90,9 @@ const Home = () => {
               className="bg-backgroundLight3 dark:bg-backgroundDark3 rounded-md py-2 px-[10px] lg:p-3 text-xs
               lg:text-sm font-normal flex-1"
             />
-            <button className="bg-textAlt1 text-white rounded-md py-2 px-3 lg:py-3 lg:px-4 font-semibold text-xs lg:text-sm">
+            <button className="bg-textAlt1 text-white rounded-md py-2 px-3 lg:py-3 lg:px-4 font-semibold text-xs lg:text-sm" onClick={() => {
+              { session ? router.push('/create-post') : router.push('/signin') }
+            }}>
               Create Post
             </button>
           </div>

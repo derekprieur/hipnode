@@ -1,5 +1,6 @@
 import './globals.css'
 import Providers from '../components/Providers'
+import Provider from '@components/Provider'
 
 export const metadata = {
   title: 'Hipnode',
@@ -14,9 +15,11 @@ export default function RootLayout({
   return (
     <html lang="en" className='font-source-sans-pro' suppressHydrationWarning>
       <body>
-        <Providers>
-          {children}
-        </Providers>
+        <Provider>
+          <Providers>
+            {children}
+          </Providers>
+        </Provider>
       </body>
     </html>
   )

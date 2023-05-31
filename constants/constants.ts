@@ -197,22 +197,27 @@ export const navOptions = [
   {
     type: "Home",
     icon: "/assets/nav-home.png",
+    link: "/",
   },
   {
     type: "Calendar",
     icon: "/assets/nav-calendar.png",
+    link: "/calendar",
   },
   {
     type: "Group",
     icon: "/assets/nav-group.png",
+    link: "/groups",
   },
   {
     type: "Podcast",
     icon: "/assets/nav-podcasts.png",
+    link: "/podcasts",
   },
   {
     type: "Interview",
     icon: "/assets/nav-interviews.png",
+    link: "/interviews",
   },
 ];
 

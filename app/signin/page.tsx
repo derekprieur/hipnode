@@ -4,16 +4,18 @@ import { useTheme } from 'next-themes';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
+import Link from 'next/link';
+import { getProviders, signIn, ClientSafeProvider } from 'next-auth/react';
 
 import { DarkModeToggle, FeatureCard, Header, InputCard, SignupCard } from '../../components';
 import { features, signupOptions } from '../../constants/constants';
-import Link from 'next/link';
 
 const Signin = () => {
     const { theme } = useTheme();
     const [logoSrc, setLogoSrc] = useState<string | null>(null);
     const [email, setEmail] = useState('dprieur123@gmail.com');
     const [password, setPassword] = useState('test');
+    const [providers, setProviders] = useState<Record<string, ClientSafeProvider> | null>(null);
 
     useEffect(() => {
         setLogoSrc(
@@ -28,7 +30,6 @@ const Signin = () => {
     const handleClick = async () => {
         try {
             const response = await axios.post('/api/signin', { email, password })
-            console.log(response);
         } catch (error) {
             console.log(error);
         }

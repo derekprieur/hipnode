@@ -65,3 +65,5 @@ export const postComments = [
         }
     },
 ]
+
+export const reportOptions = ['False Information', 'Low Quality', 'Spam', 'Hate Speech', 'Inappropriate']

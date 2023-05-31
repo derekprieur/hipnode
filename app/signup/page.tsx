@@ -55,7 +55,6 @@ const Signup = () => {
     const handleClick = () => {
         if (signupStep < 5) {
             setSignupStep((prev) => prev + 1);
-            console.log('test')
         }
     };
 

@@ -3,16 +3,23 @@
 import React, { useState } from 'react'
 import { MobileNav, Navbar, PostCommentCard } from '../../components'
 import Image from 'next/image'
-import { additionalPosts, postComments, postContent, postDetails, postTags } from '../../constants/post'
+import { additionalPosts, postComments, postContent, postDetails, postTags, reportOptions } from '../../constants/post'
 
 type Props = {}
 
 const Posts = (props: Props) => {
     const [isFollowing, setIsFollowing] = useState(false)
+    const [reportModalShowing, setReportModalShowing] = useState(false)
+
+    const handleReportToggle = () => {
+        setReportModalShowing(prev => !prev)
+        console.log(reportModalShowing, 'reportModalShowing')
+    }
+
     return (
-        <div>
+        <div className='relative'>
             <Navbar />
-            <div className="p-5 lg:px-10 bg-backgroundLight1 dark:bg-backgroundDark1 h-max sm:h-screen md:h-max lg:h-screen flex flex-col lg:flex-row justify-between gap-5">
+            <div className={`p-5 lg:px-10 bg-backgroundLight1 dark:bg-backgroundDark1 h-max sm:h-screen md:h-max lg:h-screen flex flex-col lg:flex-row justify-between gap-5 ${reportModalShowing && 'blur-sm'}`}>
                 <div className='flex flex-col lg:flex-row gap-5'>
                     <div className='flex flex-col gap-5 lg:flex-row-reverse lg:items-start'>
                         <div>
@@ -50,7 +57,7 @@ const Posts = (props: Props) => {
                         </div>
                         <div className='flex flex-col bg-white dark:bg-backgroundDark2 p-5 rounded-2xl gap-5 shrink-0 lg:min-w-[210px]'>
                             {postDetails.map((detail, index) => (
-                                <div key={index} className='flex gap-[14px] items-center'>
+                                <div key={index} className='flex gap-[14px] items-center cursor-pointer' onClick={() => { detail.type.toLowerCase() === 'report' && handleReportToggle() }}>
                                     <div className='py-[5px] px-1 bg-backgroundLight1 dark:bg-backgroundDark3 rounded-md'>
                                         <Image src={detail.icon} alt={detail.type} width={20} height={20} className='object-contain' />
                                     </div>
@@ -102,6 +109,20 @@ const Posts = (props: Props) => {
                 </div>
             </div>
             <MobileNav />
+            {reportModalShowing && (
+                <div className='w-full max-w-[335px] lg:max-w-[477px] bg-white dark:bg-backgroundDark3 rounded-2xl absolute z-40 left-1/2 -translate-x-1/2 top-24 lg:top-32 p-5'>
+                    <h3 className='font-semibold text-lg'>Why are you reporting this post by @Mansurul Haque?</h3>
+                    <div className='mt-[30px] flex flex-wrap gap-5'>
+                        {reportOptions.map((option, index) => (
+                            <div key={option + index} className='py-[10px] px-5 bg-backgroundLight3 dark:bg-backgroundDark2 rounded-[20px] border border-backgroundLight4 dark:border-textLight1 text-xs'>{option}</div>
+                        ))}
+                    </div>
+                    <div className='mt-[30px] flex gap-5'>
+                        <button className='bg-backgroundAlt5 py-[10px] w-[160px] text-white rounded-md font-semibold text-lg'>Submit</button>
+                        <button className='text-textLight3 text-lg' onClick={handleReportToggle}>Cancel</button>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }

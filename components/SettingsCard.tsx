@@ -2,14 +2,16 @@ import Image from 'next/image'
 import React from 'react'
 import { useTheme } from 'next-themes'
 import DarkModeToggle from './DarkModeToggle'
+import { useRouter } from 'next/navigation'
 
 type Props = {}
 
 const SettingsCard = (props: Props) => {
+    const router = useRouter();
     const { theme } = useTheme();
     return (
         <div className='flex flex-col gap-5'>
-            <div className='flex gap-[14px]'>
+            <div className='flex gap-[14px] cursor-pointer' onClick={() => router.push('/profile')}>
                 <Image src={theme === 'dark' ? '/assets/profile-dark.png' : '/assets/profile.png'} alt='profile' width={20} height={20} className='object-contain' />
                 <h4 className='font-semibold'>Profile</h4>
             </div>
