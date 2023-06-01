@@ -11,7 +11,6 @@ type Props = {
 }
 
 const GroupCard = ({ group }: Props) => {
-    console.log(group)
     return (
         <div className="flex gap-[10px]">
             {group.group &&

@@ -2,6 +2,8 @@
 
 import React from 'react'
 import { ThemeProvider } from 'next-themes'
+import { Provider } from 'react-redux'
+import store from '@redux/store'
 
 const Providers = ({
     children,
@@ -9,7 +11,9 @@ const Providers = ({
     children: React.ReactNode
 }) => {
     return (
-        <ThemeProvider>{children}</ThemeProvider>
+        <Provider store={store}>
+            <ThemeProvider>{children}</ThemeProvider>
+        </Provider>
     )
 }
 

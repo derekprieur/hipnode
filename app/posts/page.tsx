@@ -13,7 +13,6 @@ const Posts = (props: Props) => {
 
     const handleReportToggle = () => {
         setReportModalShowing(prev => !prev)
-        console.log(reportModalShowing, 'reportModalShowing')
     }
 
     return (

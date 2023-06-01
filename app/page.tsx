@@ -1,41 +1,34 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
+import { useDispatch, useSelector } from "react-redux";
 
-import {
-  MeetupCard,
-  MobileNav,
-  Navbar,
-  PostCard,
-  SortCard,
-  Title,
-  PodcastCard,
-  TagCard,
-  GroupCard,
-  ChatBox,
-} from "../components";
+import { setTitle } from "@redux/createPostSlice";
+import { MeetupCard, MobileNav, Navbar, PostCard, SortCard, Title, PodcastCard, TagCard, GroupCard, ChatBox, } from "../components";
+import { RootState } from "@redux/store";
 import {
   meetups,
   podcasts,
   popularTags,
   sortTypes,
 } from "../constants/constants";
-import { useRouter } from "next/navigation";
 
 const Home = () => {
   const [showChatBox, setShowChatBox] = useState(false);
-  const router = useRouter();
-  const { data: session } = useSession();
   const [posts, setPosts] = useState([])
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const { data: session } = useSession();
+  const title = useSelector((state: RootState) => state.post.title);
+  console.log(title, "title");
 
   const getPosts = async () => {
-    console.log("get posts");
     try {
       const response = await fetch("/api/posts");
       const data = await response.json();
-      console.log(data, "data");
       setPosts(data);
     } catch (error) {
       console.log(error, "error");
@@ -80,15 +73,17 @@ const Home = () => {
         </div>
         <div>
           <div className="flex p-[14px] lg:p-5 bg-white dark:bg-backgroundDark2 mt-5 lg:mt-0 rounded-[10px] gap-[10px] justify-between">
-            <Image src="/assets/avatar-rounded.png" width={30} height={30} alt="avatar" className="flex lg:hidden object-contain shrink-0"
+            <Image src={session ? session.user?.image || "/assets/avatar-rounded.png" : '/assets/avatar-rounded.png'} width={30} height={30} alt="avatar" className="flex lg:hidden object-contain shrink-0 rounded-full"
             />
-            <Image src="/assets/avatar-rounded.png" width={40} height={40} alt="avatar" className="hidden lg:flex object-contain shrink-0"
+            <Image src={session ? session.user?.image || "/assets/avatar-rounded.png" : '/assets/avatar-rounded.png'} width={40} height={40} alt="avatar" className="hidden lg:flex object-contain shrink-0 rounded-full"
             />
             <input
               type="text"
               placeholder="Let's share what is going on..."
               className="bg-backgroundLight3 dark:bg-backgroundDark3 rounded-md py-2 px-[10px] lg:p-3 text-xs
-              lg:text-sm font-normal flex-1"
+              lg:text-sm font-normal flex-1 outline-none"
+              value={title}
+              onChange={(e) => dispatch(setTitle(e.target.value))}
             />
             <button className="bg-textAlt1 text-white rounded-md py-2 px-3 lg:py-3 lg:px-4 font-semibold text-xs lg:text-sm" onClick={() => {
               { session ? router.push('/create-post') : router.push('/signin') }

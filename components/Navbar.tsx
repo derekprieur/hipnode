@@ -20,8 +20,6 @@ const Navbar = (props: Props) => {
     const [showingMessages, setShowingMessages] = useState(false)
     const [showingNotifications, setShowingNotifications] = useState(false)
     const [showingSettings, setShowingSettings] = useState(false)
-    console.log('session', session)
-    console.log('showing settings', showingSettings)
 
     const toggleMessages = () => {
         setShowingMessages(!showingMessages)
@@ -34,8 +32,6 @@ const Navbar = (props: Props) => {
     const toggleSettings = () => {
         setShowingSettings(!showingSettings)
     }
-
-    console.log('session', session)
 
     useEffect(() => {
         setLogoSrc(

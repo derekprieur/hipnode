@@ -31,14 +31,12 @@ const PostCard = ({ post }: Props) => {
             const response = await fetch(`/api/users/${post.user}`)
             const data = await response.json()
             setUserInfo(data)
-            console.log(userInfo, 'userInfo')
         } catch (error) {
             console.log(error, 'error');
         }
     }
 
     useEffect(() => {
-        console.log('get creator info')
         getCreatorInfo()
     }, [])
 

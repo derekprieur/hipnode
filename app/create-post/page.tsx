@@ -2,9 +2,10 @@
 
 import Image from 'next/image'
 import { useTheme } from 'next-themes'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
+import { useSelector } from 'react-redux'
 
 import { Dropdown, MobileNav, Navbar } from '../../components'
 import { textOptions } from '../../constants/createPost'
@@ -25,7 +26,7 @@ const CreatePost = (props: Props) => {
         tags: '',
         content: '',
     })
-    console.log(formData, 'formData')
+    const title = useSelector((state: any) => state.post.title)
 
     const toggleGroupDropdown = () => {
         setGroupDropdownOpen(!groupDropdownOpen)
@@ -36,9 +37,27 @@ const CreatePost = (props: Props) => {
     }
 
     const handleCreatePost = async () => {
+        console.log(selectedPostType, 'selectedPostType')
         try {
-            console.log('post')
-            const response = await fetch('/api/posts', {
+            let apiPath = '';
+            switch (selectedPostType) {
+                case 'Post':
+                    apiPath = '/api/posts';
+                    break;
+                case 'Meetup':
+                    apiPath = '/api/meetups';
+                    break;
+                case 'Podcast':
+                    apiPath = '/api/podcasts';
+                    break;
+                case 'Interview':
+                    apiPath = '/api/interviews';
+                    break;
+                default:
+                    apiPath = '/api/posts';
+            }
+
+            const response = await fetch(apiPath, {
                 method: 'POST',
                 body: JSON.stringify({
                     title: formData.title,
@@ -47,16 +66,21 @@ const CreatePost = (props: Props) => {
                     content: formData.content,
                     user: session?.user?.id,
                 }),
-            })
-            console.log('post created')
+            });
+
             if (response.ok) {
-                console.log(response, 'response')
-                router.push('/')
+                router.push('/');
             }
         } catch (error) {
             console.log(error, 'error');
         }
-    }
+    };
+
+
+    useEffect(() => {
+        setFormData({ ...formData, title: title })
+    }, [])
+
 
     return (
         <div className='bg-backgroundLight1 dark:bg-backgroundDark1 h-auto pb-10'>

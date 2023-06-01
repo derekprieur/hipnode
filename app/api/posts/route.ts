@@ -3,7 +3,6 @@ import Post from "@models/post";
 
 export const POST = async (req: any) => {
     const { title, image, tags, content, user } = await req.json();
-    console.log(user, "user");
     try {
         await connectToDB();
         const newPost = new Post({
@@ -13,9 +12,7 @@ export const POST = async (req: any) => {
             content,
             user,
         });
-        console.log('attempt to save')
         await newPost.save();
-        console.log('saved')
         return new Response(JSON.stringify(newPost), {
             status: 201,
         })
