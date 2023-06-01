@@ -1,17 +1,42 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTheme } from 'next-themes'
 
-import { MeetupCard, Navbar, PodcastCard, PostCard, Title } from '../../components'
+import { MeetupCard, Navbar, PodcastCard, PostCard, Title } from '../../../components'
 import Image from 'next/image'
-import { categories } from '../../constants/profile'
-import { meetups, podcasts, posts } from '../../constants/constants'
+import { categories } from '../../../constants/profile'
+import { meetups, podcasts, posts } from '../../../constants/constants'
 
 type Props = {}
 
-const Profile = (props: Props) => {
+const Profile = ({ params }: { params: { id: string } }) => {
     const { theme } = useTheme()
+    const [userInfo, setUserInfo] = useState({
+        username: '',
+        email: '',
+        _id: '',
+        image: '',
+        description: '',
+    })
+    console.log(params, 'params')
+
+    const getCreatorInfo = async () => {
+        try {
+            const response = await fetch(`/api/users/${params.id}`)
+            const data = await response.json()
+            setUserInfo(data)
+        } catch (error) {
+            console.log(error, 'error');
+        }
+    }
+
+    useEffect(() => {
+        getCreatorInfo()
+    }, [])
+
+    console.log(userInfo, 'userInfo')
+
     return (
         <div className="bg-backgroundLight1 dark:bg-backgroundDark1 h-auto">
             <Navbar />
@@ -20,11 +45,11 @@ const Profile = (props: Props) => {
                     <div className='relative w-full'>
                         <Image src='/assets/profile-bg.png' alt='background' width={335} height={106} className='w-full max-h-[106px] lg:h-[106px]' />
                         <div className='bg-white dark:bg-backgroundDark2 w-[130px] h-[130px] rounded-full absolute top-10 left-1/2 -translate-x-1/2 flex items-center justify-center'>
-                            <Image src='/assets/user1.png' alt='user' width={120} height={120} className='rounded-full' />
+                            <Image src={userInfo.image} alt='user' width={120} height={120} className='rounded-full' />
                         </div>
                     </div>
                     <div className='flex flex-col items-center px-5 pb-[30px]'>
-                        <h1 className='mt-[80px] text-[26px] font-semibold'>AR. Jakir</h1>
+                        <h1 className='mt-[80px] text-[26px] font-semibold'>{userInfo.username}</h1>
                         <h3 className='text-textLight3'>User Interface Designer</h3>
                         <div className='flex gap-[10px] mt-5'>
                             <button className='py-[6px] px-[38px] rounded-md bg-backgroundAlt5 font-semibold text-white'>Follow</button>
@@ -43,7 +68,7 @@ const Profile = (props: Props) => {
                             <Image src='/assets/user1.png' alt='user' width={30} height={30} className='rounded-full' />
                             <Image src='/assets/user1.png' alt='user' width={30} height={30} className='rounded-full' />
                         </div>
-                        <p className='mt-5 text-textLight3 text-center'>Hey there... I'm AR Jakir! I'm here to learn from and support the other members of this community!</p>
+                        <p className='mt-5 text-textLight3 text-center'>{userInfo?.description}</p>
                         <div className='flex lg:flex-col mt-5 items-center gap-[10px]'>
                             <div className='flex items-center gap-[10px]'>
                                 <Image src={theme === 'dark' ? '/assets/world-dark.png' : '/assets/world.png'} alt='world' width={14} height={14} />

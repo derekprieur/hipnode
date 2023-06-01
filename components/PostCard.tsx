@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 import { PostMetrics, TagBubble } from '../components'
 
@@ -20,7 +21,9 @@ const PostCard = ({ post }: Props) => {
     const [userInfo, setUserInfo] = useState({
         username: '',
         image: '',
+        _id: ''
     })
+    const router = useRouter()
 
     const handleClick = () => {
         setFavorited(!favorited)
@@ -40,7 +43,6 @@ const PostCard = ({ post }: Props) => {
         getCreatorInfo()
     }, [])
 
-
     return (
         <div className='p-[14px] lg:p-5 bg-white dark:bg-backgroundDark2 rounded-[10px] flex items-start'>
             <Image src={post.image} alt='post' width={56} height={56} className='object-contain shrink-0 flex lg:hidden' />
@@ -49,7 +51,7 @@ const PostCard = ({ post }: Props) => {
                 <div className='flex flex-col lg:mb-[30px]'>
                     <div className='flex items-start gap-5 lg:justify-between'>
                         <h2 className='text-textLight1 dark:text-textDark1 text-xs lg:text-lg font-semibold'>{post.title}</h2>
-                        <Image src={userInfo?.image} alt='user' width={30} height={30} className='object-contain rounded-full shrink-0 flex lg:hidden' />
+                        <Image src={userInfo?.image} alt='user' width={30} height={30} className='object-contain rounded-full shrink-0 flex lg:hidden cursor-pointer' onClick={() => router.push(`/profile/${userInfo._id}`)} />
                         <div className={`hidden lg:flex ${favorited ? 'bg-backgroundAlt3 dark:bg-backgroundDark3' : 'bg-backgroundLight3 dark:bg-backgroundDark3'} py-[6px] px-[5px] rounded-full cursor-pointer`} onClick={handleClick}>
                             <Image src={favorited ? '/assets/heart-full.png' : '/assets/heart.png'} alt='heart' width={20} height={20} className='object-contain shrink-0' />
                         </div>
@@ -62,7 +64,7 @@ const PostCard = ({ post }: Props) => {
                 </div>
                 <div className='flex justify-between flex-wrap'>
                     <div className='hidden lg:flex gap-[10px]'>
-                        <Image src={userInfo?.image} alt='user' width={40} height={40} className='object-contain rounded-full shrink-0' />
+                        <Image src={userInfo?.image} alt='user' width={40} height={40} className='object-contain rounded-full shrink-0' onClick={() => router.push(`/profile/${userInfo._id}`)} />
                         <div className='flex flex-col'>
                             <div className='flex items-center gap-1'>
                                 <p className='font-semibold text-sm'>{userInfo?.username}</p>
