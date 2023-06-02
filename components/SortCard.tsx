@@ -6,12 +6,14 @@ type Props = {
         text: string
         icon: string
         subtext: string
-    }
+    },
+    currentSortType: string
+    setCurrentSortType: (sortType: string) => void
 }
 
-const SortCard = ({ sortType }: Props) => {
+const SortCard = ({ sortType, currentSortType, setCurrentSortType }: Props) => {
     return (
-        <div className='flex gap-[6px] text-textLight1 dark:text-white font-semibold text-xs items-center'>
+        <div className={`flex gap-[6px] text-textLight1 dark:text-white font-semibold text-xs items-center p-[5px] cursor-pointer ${sortType.text === currentSortType && 'bg-backgroundLight3 rounded-md'}`} onClick={() => setCurrentSortType(sortType.text)}>
             <div className='bg-backgroundLight3 dark:bg-backgroundDark3 p-1 rounded-md'>
                 <Image src={sortType.icon} width={20} height={20} alt='sort' className='object-contain' />
             </div>

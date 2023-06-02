@@ -5,15 +5,7 @@ import { useRouter } from 'next/navigation'
 import { PostMetrics, TagBubble } from '../components'
 
 type Props = {
-    post: {
-        title: string
-        tags: string[]
-        image: string
-        user: string
-        viewCount: number
-        likeCount: number
-        commentCount: number
-    }
+    post: Post
 }
 
 const PostCard = ({ post }: Props) => {
@@ -64,10 +56,10 @@ const PostCard = ({ post }: Props) => {
                 </div>
                 <div className='flex justify-between flex-wrap'>
                     <div className='hidden lg:flex gap-[10px]'>
-                        <Image src={userInfo?.image} alt='user' width={40} height={40} className='object-contain rounded-full shrink-0' onClick={() => router.push(`/profile/${userInfo._id}`)} />
+                        <Image src={userInfo?.image} alt='user' width={40} height={40} className='object-contain rounded-full shrink-0 cursor-pointer' onClick={() => router.push(`/profile/${userInfo._id}`)} />
                         <div className='flex flex-col'>
                             <div className='flex items-center gap-1'>
-                                <p className='font-semibold text-sm'>{userInfo?.username}</p>
+                                <p className='font-semibold text-sm cursor-pointer' onClick={() => router.push(`/profile/${userInfo._id}`)}>{userInfo?.username}</p>
                                 <div className='w-[5px] h-[5px] rounded-full bg-backgroundLight4' />
                             </div>
                             <p className='text-[10px] text-textLight3'>3 weeks ago</p>

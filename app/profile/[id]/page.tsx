@@ -6,12 +6,13 @@ import { useTheme } from 'next-themes'
 import { MeetupCard, Navbar, PodcastCard, PostCard, Title } from '../../../components'
 import Image from 'next/image'
 import { categories } from '../../../constants/profile'
-import { meetups, podcasts, posts } from '../../../constants/constants'
+import { meetups, podcasts } from '../../../constants/constants'
 
 type Props = {}
 
 const Profile = ({ params }: { params: { id: string } }) => {
     const { theme } = useTheme()
+    const [posts, setPosts] = useState<Post[]>([])
     const [userInfo, setUserInfo] = useState({
         username: '',
         email: '',
@@ -19,7 +20,7 @@ const Profile = ({ params }: { params: { id: string } }) => {
         image: '',
         description: '',
     })
-    console.log(params, 'params')
+    const [currentSelectedType, setCurrentSelectedType] = useState('Posts')
 
     const getCreatorInfo = async () => {
         try {
@@ -31,7 +32,18 @@ const Profile = ({ params }: { params: { id: string } }) => {
         }
     }
 
+    const getPosts = async () => {
+        try {
+            const response = await fetch("/api/posts");
+            const data = await response.json();
+            setPosts(data);
+        } catch (error) {
+            console.log(error, "error");
+        }
+    }
+
     useEffect(() => {
+        getPosts()
         getCreatorInfo()
     }, [])
 
@@ -88,7 +100,7 @@ const Profile = ({ params }: { params: { id: string } }) => {
                 <div className='flex flex-col gap-5'>
                     <div className='bg-white dark:bg-backgroundDark2 flex p-[10px] lg:py-5 lg:px-[50px] gap-10 rounded-[14px] overflow-x-scroll hide-scrollbar lg:justify-between'>
                         {categories.map((category, index) => (
-                            <h2 key={category + index} className='font-semibold lg:text-textLight3 lg:dark:text-textDark2 lg:text-lg'>{category}</h2>
+                            <h2 key={category + index} className={`font-semibold cursor-pointer py-1 px-[10px] lg:text-lg ${category === currentSelectedType ? 'text-white bg-textAlt1 rounded-3xl' : 'lg:text-textLight3 lg:dark:text-textDark2'}`} onClick={() => setCurrentSelectedType(category)}>{category}</h2>
                         ))}
                     </div>
                     <div className="flex flex-col gap-5">

@@ -19,11 +19,11 @@ import {
 const Home = () => {
   const [showChatBox, setShowChatBox] = useState(false);
   const [posts, setPosts] = useState([])
+  const [currentSortType, setCurrentSortType] = useState('Newest posts')
   const router = useRouter();
   const dispatch = useDispatch();
   const { data: session } = useSession();
   const title = useSelector((state: RootState) => state.post.title);
-  console.log(title, "title");
 
   const getPosts = async () => {
     try {
@@ -39,7 +39,6 @@ const Home = () => {
     getPosts();
   }, [])
 
-
   return (
     <div>
       <Navbar />
@@ -47,7 +46,7 @@ const Home = () => {
         <div className="flex flex-col gap-5 shrink-0">
           <div className="flex lg:flex-col bg-white dark:bg-backgroundDark2 p-[10px] rounded-[10px] justify-between gap-[10px] ">
             {sortTypes.map((sortType, index) => (
-              <SortCard key={index} sortType={sortType} />
+              <SortCard key={index} sortType={sortType} currentSortType={currentSortType} setCurrentSortType={setCurrentSortType} />
             ))}
           </div>
           <div className="hidden lg:flex md:flex-col bg-white dark:bg-backgroundDark2 p-[10px] md:p-5 rounded-[10px] justify-between">
