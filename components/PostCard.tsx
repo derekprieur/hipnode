@@ -37,13 +37,13 @@ const PostCard = ({ post }: Props) => {
 
     return (
         <div className='p-[14px] lg:p-5 bg-white dark:bg-backgroundDark2 rounded-[10px] flex items-start'>
-            <Image src={post.image} alt='post' width={56} height={56} className='object-contain shrink-0 flex lg:hidden' />
-            <Image src={post.image} alt='post' width={156} height={156} className='object-contain shrink-0 hidden lg:flex' />
+            {post.image && <Image src={post.image} alt='post' width={56} height={56} className='object-contain shrink-0 flex lg:hidden' />}
+            {post.image && <Image src={post.image} alt='post' width={156} height={156} className='object-contain shrink-0 hidden lg:flex' />}
             <div className='flex flex-col ml-[14px] lg:w-full lg:justify-between'>
                 <div className='flex flex-col lg:mb-[30px]'>
                     <div className='flex items-start gap-5 lg:justify-between'>
                         <h2 className='text-textLight1 dark:text-textDark1 text-xs lg:text-lg font-semibold'>{post.title}</h2>
-                        <Image src={userInfo?.image} alt='user' width={30} height={30} className='object-contain rounded-full shrink-0 flex lg:hidden cursor-pointer' onClick={() => router.push(`/profile/${userInfo._id}`)} />
+                        {userInfo.image && <Image src={userInfo?.image} alt='user' width={30} height={30} className='object-contain rounded-full shrink-0 flex lg:hidden cursor-pointer' onClick={() => router.push(`/profile/${userInfo._id}`)} />}
                         <div className={`hidden lg:flex ${favorited ? 'bg-backgroundAlt3 dark:bg-backgroundDark3' : 'bg-backgroundLight3 dark:bg-backgroundDark3'} py-[6px] px-[5px] rounded-full cursor-pointer`} onClick={handleClick}>
                             <Image src={favorited ? '/assets/heart-full.png' : '/assets/heart.png'} alt='heart' width={20} height={20} className='object-contain shrink-0' />
                         </div>
@@ -56,7 +56,7 @@ const PostCard = ({ post }: Props) => {
                 </div>
                 <div className='flex justify-between flex-wrap'>
                     <div className='hidden lg:flex gap-[10px]'>
-                        <Image src={userInfo?.image} alt='user' width={40} height={40} className='object-contain rounded-full shrink-0 cursor-pointer' onClick={() => router.push(`/profile/${userInfo._id}`)} />
+                        {userInfo.image && <Image src={userInfo?.image} alt='user' width={40} height={40} className='object-contain rounded-full shrink-0 cursor-pointer' onClick={() => router.push(`/profile/${userInfo._id}`)} />}
                         <div className='flex flex-col'>
                             <div className='flex items-center gap-1'>
                                 <p className='font-semibold text-sm cursor-pointer' onClick={() => router.push(`/profile/${userInfo._id}`)}>{userInfo?.username}</p>

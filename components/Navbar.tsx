@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import { useTheme } from 'next-themes'
-import { useSession } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 
 import { MessageCard, NotificationCard, NotificationType, SearchInput, SettingsCard, Title } from './../components'
@@ -31,6 +31,11 @@ const Navbar = (props: Props) => {
 
     const toggleSettings = () => {
         setShowingSettings(!showingSettings)
+    }
+
+    const handleSignOut = () => {
+        signOut()
+        router.push('/')
     }
 
     useEffect(() => {
@@ -117,7 +122,7 @@ const Navbar = (props: Props) => {
                         </div>
                     }
                     <p className='hidden lg:flex text-textLight4 dark:text-textDark1 font-bold'>{session.user?.name}</p>
-                    <Image src={'/assets/arrow-down.png'} alt={'arrow-down'} width={20} height={20} className='object-contain hidden lg:flex' />
+                    <Image src={'/assets/arrow-down.png'} alt={'arrow-down'} width={20} height={20} className='object-contain hidden lg:flex cursor-pointer' onClick={handleSignOut} />
                 </div> : <button className='flex bg-black text-white font-semibold text-sm px-5 py-2 rounded-md' onClick={() => router.push('/signin')}>Login</button>}
             </div>
         </div>

@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { setTitle } from "@redux/createPostSlice";
@@ -20,24 +20,35 @@ const Home = () => {
   const [showChatBox, setShowChatBox] = useState(false);
   const [posts, setPosts] = useState([])
   const [currentSortType, setCurrentSortType] = useState('Newest posts')
+  const [displayCount, setDisplayCount] = useState(4);
   const router = useRouter();
   const dispatch = useDispatch();
   const { data: session } = useSession();
   const title = useSelector((state: RootState) => state.post.title);
+  console.log(currentSortType, 'currentSortType')
 
   const getPosts = async () => {
     try {
       const response = await fetch("/api/posts");
-      const data = await response.json();
+      let data = await response.json();
+      if (currentSortType === 'Newest posts') {
+        data = data.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      } else if (currentSortType === 'Popular today') {
+        data = data.sort((a: any, b: any) => b.likeCount - a.likeCount);
+      }
       setPosts(data);
     } catch (error) {
       console.log(error, "error");
     }
   }
 
+  const seeMorePosts = () => {
+    setDisplayCount(displayCount + 4);
+  };
+
   useEffect(() => {
     getPosts();
-  }, [])
+  }, [currentSortType])
 
   return (
     <div>
@@ -91,20 +102,21 @@ const Home = () => {
             </button>
           </div>
           <div className="flex flex-col mt-5 gap-5">
-            {posts.map((post, index) => (
+            {posts.slice(0, displayCount).map((post, index) => (
               <PostCard key={index} post={post} />
             ))}
           </div>
-          <div className="flex mt-3 gap-[14px] items-center">
-            <p className="text-[10px] text-textLight3">See more</p>
-            <Image
-              src="/assets/arrow.png"
-              alt="arrow"
-              width={12}
-              height={10}
-              className="object-contain"
-            />
-          </div>
+          {displayCount < posts.length &&
+            <div className="flex mt-3 gap-[14px] items-center cursor-pointer" onClick={seeMorePosts}>
+              <p className="text-[10px] text-textLight3">See more</p>
+              <Image
+                src="/assets/arrow.png"
+                alt="arrow"
+                width={12}
+                height={10}
+                className="object-contain"
+              />
+            </div>}
         </div>
         <div className="flex flex-col">
           <div className="bg-white dark:bg-backgroundDark2 rounded-[10px] p-5 mt-[22px] lg:mt-0">

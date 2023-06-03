@@ -3,6 +3,7 @@ import GoogleProvider from 'next-auth/providers/google';
 
 import User from "../../../../models/user";
 import { connectToDB } from "@utils/database";
+import { signOut } from "next-auth/react";
 
 const handler = NextAuth({
     providers: [
@@ -30,6 +31,15 @@ const handler = NextAuth({
                     })
                 }
 
+                return true;
+            } catch (error) {
+                console.log(error)
+                return false;
+            }
+        },
+        async signOut() {
+            try {
+                await signOut({ callbackUrl: "/" });
                 return true;
             } catch (error) {
                 console.log(error)
