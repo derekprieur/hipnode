@@ -7,20 +7,16 @@ import { MeetupCard, Navbar, PodcastCard, PostCard, Title } from '../../../compo
 import Image from 'next/image'
 import { categories } from '../../../constants/profile'
 import { meetups, podcasts } from '../../../constants/constants'
-
-type Props = {}
+import { useSession } from 'next-auth/react'
 
 const Profile = ({ params }: { params: { id: string } }) => {
+    const [isFollowed, setIsFollowed] = useState(false)
     const { theme } = useTheme()
     const [posts, setPosts] = useState<Post[]>([])
-    const [userInfo, setUserInfo] = useState({
-        username: '',
-        email: '',
-        _id: '',
-        image: '',
-        description: '',
-    })
+    const [loggedInUserInfo, setLoggedInUserInfo] = useState<User>()
+    const [userInfo, setUserInfo] = useState<User>({ name: '', username: '', email: '', image: '', description: '', following: [], favorites: [], followers: [], _id: '' })
     const [currentSelectedType, setCurrentSelectedType] = useState('Posts')
+    const { data: session } = useSession()
 
     const getCreatorInfo = async () => {
         try {
@@ -42,12 +38,54 @@ const Profile = ({ params }: { params: { id: string } }) => {
         }
     }
 
+    const getLoggedInUserInfo = async () => {
+        try {
+            // @ts-ignore
+            const response = await fetch(`/api/users/${session?.user?.id}`)
+            const data = await response.json()
+            setLoggedInUserInfo(data)
+            if (data.following.includes(params.id)) {
+                setIsFollowed(true)
+            } else {
+                setIsFollowed(false)
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     useEffect(() => {
         getPosts()
         getCreatorInfo()
     }, [])
 
-    console.log(userInfo, 'userInfo')
+    useEffect(() => {
+        getLoggedInUserInfo()
+    }, [session])
+
+
+    const handleFollow = async () => {
+        try {
+            // @ts-ignore
+            const response = await fetch(`/api/users/${session?.user?.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    followId: params.id
+                })
+            });
+            setIsFollowed(prev => !prev)
+
+
+        } catch (error) {
+            console.log('Failed to follow user:', error);
+        }
+    }
+
+    console.log(userInfo, 'user info');
+    console.log(loggedInUserInfo, 'logged in user info');
 
     return (
         <div className="bg-backgroundLight1 dark:bg-backgroundDark1 h-auto">
@@ -64,12 +102,12 @@ const Profile = ({ params }: { params: { id: string } }) => {
                         <h1 className='mt-[80px] text-[26px] font-semibold'>{userInfo.username}</h1>
                         <h3 className='text-textLight3'>User Interface Designer</h3>
                         <div className='flex gap-[10px] mt-5'>
-                            <button className='py-[6px] px-[38px] rounded-md bg-backgroundAlt5 font-semibold text-white'>Follow</button>
-                            <div className='bg-backgroundAlt4 dark:bg-backgroundDark3 flex items-center justify-center p-2 rounded-md'>
-                                <Image src='/assets/profile-message.png' alt='message' width={20} height={20} />
+                            <button className='py-[6px] w-[124px] rounded-md bg-backgroundAlt5 font-semibold text-white' onClick={handleFollow}>{isFollowed ? 'Following' : 'Follow'}</button>
+                            <div className='bg-backgroundAlt4 dark:bg-backgroundDark3 flex items-center justify-center p-2 rounded-md shrink-0'>
+                                <Image src='/assets/profile-message.png' alt='message' width={20} height={20} className='shrink-0' />
                             </div>
                         </div>
-                        <p className='font-semibold mt-5 dark:text-textDark2'>33 Followers  •  501 Points</p>
+                        <p className='font-semibold mt-5 dark:text-textDark2'>{userInfo.followers.length} Followers  •  501 Points</p>
                         <p className='font-semibold mt-5'>Following 47</p>
                         <div className='flex mt-[15px] gap-[14px] lg:flex-wrap'>
                             <Image src='/assets/user1.png' alt='user' width={30} height={30} className='rounded-full' />

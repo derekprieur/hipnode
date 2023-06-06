@@ -12,7 +12,6 @@ const SettingsCard = (props: Props) => {
     const router = useRouter();
     const { theme } = useTheme();
     const { data: session }: any = useSession();
-    console.log(session, 'session')
 
     return (
         <div className='flex flex-col gap-5'>

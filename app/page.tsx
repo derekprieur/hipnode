@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { setTitle } from "@redux/createPostSlice";
@@ -21,11 +21,27 @@ const Home = () => {
   const [posts, setPosts] = useState([])
   const [currentSortType, setCurrentSortType] = useState('Newest posts')
   const [displayCount, setDisplayCount] = useState(4);
+  const [userInfo, setUserInfo] = useState<User>();
   const router = useRouter();
   const dispatch = useDispatch();
   const { data: session } = useSession();
   const title = useSelector((state: RootState) => state.post.title);
   console.log(currentSortType, 'currentSortType')
+  console.log(session, 'session')
+
+  const getCreatorInfo = async () => {
+    try {
+      //@ts-ignore
+      const response = await fetch(`/api/users/${session?.user?.id}`)
+      const data = await response.json()
+      setUserInfo(data)
+    } catch (error) {
+      console.log(error, 'error');
+    }
+  }
+
+  console.log(userInfo, 'userInfo')
+  console.log(posts, 'posts')
 
   const getPosts = async () => {
     try {
@@ -35,6 +51,8 @@ const Home = () => {
         data = data.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
       } else if (currentSortType === 'Popular today') {
         data = data.sort((a: any, b: any) => b.likeCount - a.likeCount);
+      } else if (currentSortType === 'Following' && userInfo?.following) {
+        data = data.filter((post: any) => userInfo.following.includes(post.user));
       }
       setPosts(data);
     } catch (error) {
@@ -49,6 +67,11 @@ const Home = () => {
   useEffect(() => {
     getPosts();
   }, [currentSortType])
+
+  useEffect(() => {
+    getCreatorInfo();
+  }, [session])
+
 
   return (
     <div>
@@ -102,21 +125,30 @@ const Home = () => {
             </button>
           </div>
           <div className="flex flex-col mt-5 gap-5">
-            {posts.slice(0, displayCount).map((post, index) => (
-              <PostCard key={index} post={post} />
-            ))}
+            {currentSortType !== 'Following' ? (
+              posts.slice(0, displayCount).map((post, index) => (
+                <PostCard key={index} post={post} />
+              ))
+            ) : userInfo?.following?.length === 0 ? (
+              <p>You are not following any users</p>
+            ) : (
+              posts.slice(0, displayCount).map((post, index) => (
+                <PostCard key={index} post={post} />
+              ))
+            )}
+
+            {displayCount < posts.length && !(currentSortType === 'Following' && userInfo?.following?.length === 0) &&
+              <div className="flex mt-3 gap-[14px] items-center cursor-pointer" onClick={seeMorePosts}>
+                <p className="text-[10px] text-textLight3">See more</p>
+                <Image
+                  src="/assets/arrow.png"
+                  alt="arrow"
+                  width={12}
+                  height={10}
+                  className="object-contain"
+                />
+              </div>}
           </div>
-          {displayCount < posts.length &&
-            <div className="flex mt-3 gap-[14px] items-center cursor-pointer" onClick={seeMorePosts}>
-              <p className="text-[10px] text-textLight3">See more</p>
-              <Image
-                src="/assets/arrow.png"
-                alt="arrow"
-                width={12}
-                height={10}
-                className="object-contain"
-              />
-            </div>}
         </div>
         <div className="flex flex-col">
           <div className="bg-white dark:bg-backgroundDark2 rounded-[10px] p-5 mt-[22px] lg:mt-0">

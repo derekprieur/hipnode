@@ -13,7 +13,13 @@ const userSchema = new Schema({
     },
     image: {
         type: String,
-    }
+    },
+    description: {
+        type: String,
+    },
+    following: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+    favorites: [{ type: Schema.Types.ObjectId, ref: 'Post' }],
+    followers: [{ type: Schema.Types.ObjectId, ref: 'User', default: [] }],
 })
 
 const User = models.User || model('User', userSchema);

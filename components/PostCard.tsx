@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 
 import { PostMetrics, TagBubble } from '../components'
 
@@ -10,20 +11,51 @@ type Props = {
 
 const PostCard = ({ post }: Props) => {
     const [favorited, setFavorited] = useState(false)
-    const [userInfo, setUserInfo] = useState({
+    const [userInfo, setUserInfo] = useState<User>({
+        email: '', name: '', description: '', following: [], image: '', _id: '', favorites: []
+    })
+    const [creatorInfo, setCreatorInfo] = useState({
         username: '',
         image: '',
         _id: ''
     })
+    const { data: session } = useSession()
     const router = useRouter()
 
-    const handleClick = () => {
-        setFavorited(!favorited)
+    const checkIfFavorited = async () => {
+        if (userInfo.favorites.includes(post?._id)) {
+            setFavorited(true)
+        } else {
+            setFavorited(false)
+        }
     }
 
-    const getCreatorInfo = async () => {
+    const updateFavoritePosts = async () => {
         try {
-            const response = await fetch(`/api/users/${post.user}`)
+            // @ts-ignore
+            const response = await fetch(`/api/users/${session?.user?.id}/favorites`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    postId: post._id,
+                    // @ts-ignore
+                    userId: session?.user?.id,
+                })
+            });
+
+            const data = await response.json();
+            setFavorited(prev => !prev);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const getLoggedInUserInfo = async () => {
+        try {
+            // @ts-ignore
+            const response = await fetch(`/api/users/${session?.user?.id}`)
             const data = await response.json()
             setUserInfo(data)
         } catch (error) {
@@ -31,9 +63,24 @@ const PostCard = ({ post }: Props) => {
         }
     }
 
+    const getCreatorInfo = async () => {
+        try {
+            const response = await fetch(`/api/users/${post.user}`)
+            const data = await response.json()
+            setCreatorInfo(data)
+        } catch (error) {
+            console.log(error, 'error');
+        }
+    }
+
     useEffect(() => {
         getCreatorInfo()
+        getLoggedInUserInfo()
     }, [])
+
+    useEffect(() => {
+        checkIfFavorited()
+    }, [userInfo])
 
     return (
         <div className='p-[14px] lg:p-5 bg-white dark:bg-backgroundDark2 rounded-[10px] flex items-start'>
@@ -43,8 +90,8 @@ const PostCard = ({ post }: Props) => {
                 <div className='flex flex-col lg:mb-[30px]'>
                     <div className='flex items-start gap-5 lg:justify-between'>
                         <h2 className='text-textLight1 dark:text-textDark1 text-xs lg:text-lg font-semibold'>{post.title}</h2>
-                        {userInfo.image && <Image src={userInfo?.image} alt='user' width={30} height={30} className='object-contain rounded-full shrink-0 flex lg:hidden cursor-pointer' onClick={() => router.push(`/profile/${userInfo._id}`)} />}
-                        <div className={`hidden lg:flex ${favorited ? 'bg-backgroundAlt3 dark:bg-backgroundDark3' : 'bg-backgroundLight3 dark:bg-backgroundDark3'} py-[6px] px-[5px] rounded-full cursor-pointer`} onClick={handleClick}>
+                        {creatorInfo.image && <Image src={creatorInfo?.image} alt='user' width={30} height={30} className='object-contain rounded-full shrink-0 flex lg:hidden cursor-pointer' onClick={() => router.push(`/profile/${creatorInfo._id}`)} />}
+                        <div className={`hidden lg:flex ${favorited ? 'bg-backgroundAlt3 dark:bg-backgroundDark3' : 'bg-backgroundLight3 dark:bg-backgroundDark3'} py-[6px] px-[5px] rounded-full cursor-pointer`} onClick={updateFavoritePosts}>
                             <Image src={favorited ? '/assets/heart-full.png' : '/assets/heart.png'} alt='heart' width={20} height={20} className='object-contain shrink-0' />
                         </div>
                     </div>
@@ -56,10 +103,10 @@ const PostCard = ({ post }: Props) => {
                 </div>
                 <div className='flex justify-between flex-wrap'>
                     <div className='hidden lg:flex gap-[10px]'>
-                        {userInfo.image && <Image src={userInfo?.image} alt='user' width={40} height={40} className='object-contain rounded-full shrink-0 cursor-pointer' onClick={() => router.push(`/profile/${userInfo._id}`)} />}
+                        {creatorInfo.image && <Image src={creatorInfo?.image} alt='user' width={40} height={40} className='object-contain rounded-full shrink-0 cursor-pointer' onClick={() => router.push(`/profile/${creatorInfo._id}`)} />}
                         <div className='flex flex-col'>
                             <div className='flex items-center gap-1'>
-                                <p className='font-semibold text-sm cursor-pointer' onClick={() => router.push(`/profile/${userInfo._id}`)}>{userInfo?.username}</p>
+                                <p className='font-semibold text-sm cursor-pointer' onClick={() => router.push(`/profile/${creatorInfo._id}`)}>{creatorInfo?.username}</p>
                                 <div className='w-[5px] h-[5px] rounded-full bg-backgroundLight4' />
                             </div>
                             <p className='text-[10px] text-textLight3'>3 weeks ago</p>

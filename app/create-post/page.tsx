@@ -37,7 +37,6 @@ const CreatePost = (props: Props) => {
     }
 
     const handleCreatePost = async () => {
-        console.log(selectedPostType, 'selectedPostType')
         try {
             let apiPath = '';
             switch (selectedPostType) {
