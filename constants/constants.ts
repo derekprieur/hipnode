@@ -104,6 +104,7 @@ export const posts = [
     viewCount: 651324,
     likeCount: 36654,
     commentCount: 56,
+    _id: "1",
   },
   {
     title:
@@ -114,6 +115,7 @@ export const posts = [
     viewCount: 244584,
     likeCount: 10920,
     commentCount: 184,
+    _id: "2",
   },
   {
     title:
@@ -124,6 +126,7 @@ export const posts = [
     viewCount: 601066,
     likeCount: 24753,
     commentCount: 209,
+    _id: "3",
   },
   {
     title:
@@ -134,6 +137,7 @@ export const posts = [
     viewCount: 964258,
     likeCount: 64755,
     commentCount: 44,
+    _id: "4",
   },
 ];
 
