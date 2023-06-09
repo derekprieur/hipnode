@@ -1,3 +1,5 @@
+import {BsGoogle, BsDiscord, BsGithub} from 'react-icons/bs'
+
 export const features = [
   {
     icon: "/assets/feature1.png",
@@ -40,15 +42,15 @@ export const features = [
 export const signupOptions = [
   {
     text: "Google",
-    icon: "/assets/google.png",
+    icon: BsGoogle,
   },
   {
-    text: "Facebook",
-    icon: "/assets/facebook.png",
+    text: "Discord",
+    icon: BsDiscord,
   },
   {
-    text: "Twitter",
-    icon: "/assets/twitter.png",
+    text: "Github",
+    icon: BsGithub,
   },
 ];
 

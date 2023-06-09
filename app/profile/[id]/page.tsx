@@ -11,6 +11,7 @@ import { useSession } from 'next-auth/react'
 
 const Profile = ({ params }: { params: { id: string } }) => {
     const [isFollowed, setIsFollowed] = useState(false)
+    const [followedUsers, setFollowedUsers] = useState<User[]>([])
     const { theme } = useTheme()
     const [posts, setPosts] = useState<Post[]>([])
     const [loggedInUserInfo, setLoggedInUserInfo] = useState<User>()
@@ -38,6 +39,21 @@ const Profile = ({ params }: { params: { id: string } }) => {
         }
     }
 
+    const getFollowedUsers = async () => {
+        try {
+            const userPromises: Promise<User>[] = userInfo.following.map(async (userId: string) => {
+                const response = await fetch(`/api/users/${userId}`);
+                return response.json();
+            });
+
+            const users: User[] = await Promise.all(userPromises);
+            setFollowedUsers(users);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+
     const getLoggedInUserInfo = async () => {
         try {
             // @ts-ignore
@@ -63,6 +79,9 @@ const Profile = ({ params }: { params: { id: string } }) => {
         getLoggedInUserInfo()
     }, [session])
 
+    useEffect(() => {
+        getFollowedUsers()
+    }, [userInfo])
 
     const handleFollow = async () => {
         try {
@@ -107,16 +126,12 @@ const Profile = ({ params }: { params: { id: string } }) => {
                                 <Image src='/assets/profile-message.png' alt='message' width={20} height={20} className='shrink-0' />
                             </div>
                         </div>
-                        <p className='font-semibold mt-5 dark:text-textDark2'>{userInfo.followers.length} Followers  •  501 Points</p>
-                        <p className='font-semibold mt-5'>Following 47</p>
+                        <p className='font-semibold mt-5 dark:text-textDark2'>{userInfo.followers.length} Followers  •  0 Points</p>
+                        <p className='font-semibold mt-5'>Following {userInfo.following.length}</p>
                         <div className='flex mt-[15px] gap-[14px] lg:flex-wrap'>
-                            <Image src='/assets/user1.png' alt='user' width={30} height={30} className='rounded-full' />
-                            <Image src='/assets/user1.png' alt='user' width={30} height={30} className='rounded-full' />
-                            <Image src='/assets/user1.png' alt='user' width={30} height={30} className='rounded-full' />
-                            <Image src='/assets/user1.png' alt='user' width={30} height={30} className='rounded-full' />
-                            <Image src='/assets/user1.png' alt='user' width={30} height={30} className='rounded-full' />
-                            <Image src='/assets/user1.png' alt='user' width={30} height={30} className='rounded-full' />
-                            <Image src='/assets/user1.png' alt='user' width={30} height={30} className='rounded-full' />
+                            {followedUsers?.map((user) => (
+                                <Image key={user._id} src={user.image} alt='user' width={30} height={30} className='rounded-full' />
+                            ))}
                         </div>
                         <p className='mt-5 text-textLight3 text-center'>{userInfo?.description}</p>
                         <div className='flex lg:flex-col mt-5 items-center gap-[10px]'>

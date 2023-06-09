@@ -46,6 +46,11 @@ const PostCard = ({ post }: Props) => {
             });
 
             const data = await response.json();
+            if (favorited) {
+                post.likeCount = post.likeCount - 1;
+            } else {
+                post.likeCount = post.likeCount + 1;
+            }
             setFavorited(prev => !prev);
         } catch (error) {
             console.log(error);

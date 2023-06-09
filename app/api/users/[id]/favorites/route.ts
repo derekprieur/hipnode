@@ -1,4 +1,5 @@
 import User from "@models/user"
+import Post from "@models/post"
 import { connectToDB } from "@utils/database"
 
 export const PUT = async (req: any, res: any) => {
@@ -12,9 +13,11 @@ export const PUT = async (req: any, res: any) => {
     if (!user.favorites.includes(postId)) {
         console.log('adding favorite')
         user.favorites.push(postId);
+        await Post.findByIdAndUpdate(postId, { $inc: { likeCount: 1 } });
     } else {
         console.log('removing favorite')
         await User.updateOne({ _id: userId }, { $pull: { favorites: postId } })
+        await Post.findByIdAndUpdate(postId, { $inc: { likeCount: -1 } });
     }
 
     await user.save();
