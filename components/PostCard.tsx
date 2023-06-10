@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 
 import { PostMetrics, TagBubble } from '../components'
+import Link from 'next/link'
 
 type Props = {
     post: Post
@@ -89,8 +90,10 @@ const PostCard = ({ post }: Props) => {
 
     return (
         <div className='p-[14px] lg:p-5 bg-white dark:bg-backgroundDark2 rounded-[10px] flex items-start'>
-            {post.image && <Image src={post.image} alt='post' width={56} height={56} className='object-contain shrink-0 flex lg:hidden' />}
-            {post.image && <Image src={post.image} alt='post' width={156} height={156} className='object-contain shrink-0 hidden lg:flex' />}
+            <Link href={`/posts/${post._id}`} className='cursor-pointer'>
+                {post.image && <Image src={post.image} alt='post' width={56} height={56} className='object-contain shrink-0 flex lg:hidden' />}
+                {post.image && <Image src={post.image} alt='post' width={156} height={156} className='object-contain shrink-0 hidden lg:flex' />}
+            </Link>
             <div className='flex flex-col ml-[14px] lg:w-full lg:justify-between'>
                 <div className='flex flex-col lg:mb-[30px]'>
                     <div className='flex items-start gap-5 lg:justify-between'>

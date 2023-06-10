@@ -2,6 +2,7 @@ import User from "@models/user";
 import { connectToDB } from "@utils/database";
 
 export const GET = async (req: any, {params}: any) => {
+    console.log('Params:', params);
     try {
         await connectToDB();
         const user = await User.findById(params.id);
@@ -9,6 +10,7 @@ export const GET = async (req: any, {params}: any) => {
             status: 200,
         })
     } catch (error) {
+        console.log('error test')
         console.log(error);
         return new Response("Failed to get user", {
             status: 500,

@@ -1,19 +1,120 @@
 'use client'
 
-import React, { useState } from 'react'
-import { MobileNav, Navbar, PostCommentCard } from '../../components'
+import React, { useEffect, useState } from 'react'
+import { MobileNav, Navbar, PostCommentCard } from '../../../components'
 import Image from 'next/image'
-import { additionalPosts, postComments, postContent, postDetails, postTags, reportOptions } from '../../constants/post'
+import { additionalPosts, postComments, postContent, postDetails, postTags, reportOptions } from '../../../constants/post'
+import { useSession } from 'next-auth/react'
 
-type Props = {}
-
-const Posts = (props: Props) => {
+const Posts = ({ params }: { params: { id: string } }) => {
     const [isFollowing, setIsFollowing] = useState(false)
     const [reportModalShowing, setReportModalShowing] = useState(false)
+    const [postInfo, setPostInfo] = useState<Post>()
+    const [creatorInfo, setCreatorInfo] = useState<User>()
+    const [signedInUserInfo, setSignedInUserInfo] = useState<User>()
+    const { data: session } = useSession()
 
     const handleReportToggle = () => {
         setReportModalShowing(prev => !prev)
     }
+
+    const getPostInfo = async () => {
+        console.log(params.id, 'params.id');
+        try {
+            const response = await fetch(`/api/posts/${params.id}`, {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            });
+
+            const data = await response.json();
+            console.log(data, 'data1')
+            setPostInfo(data);
+        } catch (error) {
+            console.log(error, 'error7');
+        }
+    }
+
+    const getCreatorInfo = async () => {
+        console.log(postInfo?.user, 'postInfo?.user 123');
+        if (!postInfo?.user) return;
+        try {
+            const response = await fetch(`/api/users/${postInfo?.user}`, {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            });
+
+            const data = await response.json();
+            console.log(data, 'data890');
+            setCreatorInfo(data);
+        } catch (error) {
+            console.log(error, 'error1');
+        }
+    }
+
+    const checkIfFollowing = async () => {
+        console.log(session, 'session');
+        if (!session?.user || !creatorInfo) return;
+        try {
+            // @ts-ignore
+            const response = await fetch(`/api/users/${session?.user.id}`, {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            });
+
+            const data = await response.json();
+            console.log(data, 'data2');
+            setSignedInUserInfo(data);
+
+            console.log(creatorInfo, 'creatorInfo')
+
+            if (data.following.includes(creatorInfo?._id)) {
+                setIsFollowing(true);
+                console.log('true');
+            }
+            else {
+                setIsFollowing(false);
+            }
+
+        } catch (error) {
+            console.log(error, 'error2');
+        }
+    }
+
+    const handleFollow = async () => {
+        try {
+            // @ts-ignore
+            const response = await fetch(`/api/users/${session?.user.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    followId: creatorInfo?._id
+                })
+            });
+
+            const data = await response.json();
+            console.log(data, 'data');
+            setIsFollowing(prev => !prev);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    useEffect(() => {
+        getPostInfo();
+    }, [])
+
+    useEffect(() => {
+        getCreatorInfo();
+    }, [postInfo])
+
+    useEffect(() => {
+        checkIfFollowing();
+    }, [session, creatorInfo])
 
     return (
         <div className='relative'>
@@ -24,9 +125,9 @@ const Posts = (props: Props) => {
                         <div>
                             <Image src='/assets/post-header.png' alt='post' width={335} height={117} className='object-contain w-full' />
                             <div className='flex flex-col bg-white dark:bg-backgroundDark2 p-5 lg:p-[30px] pl-[61px] lg:pl-[77px] gap-[14px] rounded-b-2xl'>
-                                <h2 className='text-textLight1 dark:text-textDark1 font-semibold lg:text-[26px]'>OnePay - Online Payment Processing Web App</h2>
+                                <h2 className='text-textLight1 dark:text-textDark1 font-semibold lg:text-[26px]'>{postInfo?.title}</h2>
                                 <div className='flex gap-6'>
-                                    {postTags.map((tag, index) => (
+                                    {postInfo?.tags.map((tag, index) => (
                                         <p key={index} className='text-textAlt5 text-xs lg:text-base'>#{tag}</p>
                                     ))}
                                 </div>
@@ -60,7 +161,7 @@ const Posts = (props: Props) => {
                                     <div className='py-[5px] px-1 bg-backgroundLight1 dark:bg-backgroundDark3 rounded-md'>
                                         <Image src={detail.icon} alt={detail.type} width={20} height={20} className='object-contain' />
                                     </div>
-                                    <p className='text-textLight3 lg:font-semibold'>{detail?.count} {detail?.type}</p>
+                                    <p className='text-textLight3 lg:font-semibold'>{detail.type.toLowerCase() === 'likes' ? postInfo?.likeCount : detail.type.toLowerCase() === 'comments' ? postInfo?.commentCount : detail.type.toLowerCase() === 'shares' ? 0 : ''} {detail?.type}</p>
                                 </div>
                             ))}
                         </div>
@@ -77,8 +178,8 @@ const Posts = (props: Props) => {
                     </div>
                     <div className='flex flex-col gap-5'>
                         <div className='flex flex-col bg-white dark:bg-backgroundDark2 py-[30px] px-[25px] items-center rounded-2xl'>
-                            <Image src='/assets/user1.png' alt='user' width={100} height={100} className='object-contain' />
-                            <h2 className='font-semibold text-[26px] mt-5 text-textLight1 dark:text-textDark1'>Mansurul Haque</h2>
+                            <Image src={creatorInfo?.image || '/assets/user1.png'} alt='user' width={100} height={100} className='object-contain rounded-full' />
+                            <h2 className='font-semibold text-[26px] mt-5 text-textLight1 dark:text-textDark1'>{creatorInfo?.username}</h2>
                             <p className='mt-[2px] text-textLight3 font-semibold'>Web Developer</p>
                             <button className={`p-[10px] border ${isFollowing ? 'bg-white dark:bg-transparent border-backgroundLight4 text-textLight3' : 'bg-backgroundAlt5 border-backgroundAlt5 text-white'} w-full mt-5 font-semibold text-lg rounded-md`} onClick={() => setIsFollowing(prev => !prev)}>{isFollowing ? 'Following' : 'Follow'}</button>
                             {isFollowing && (
@@ -90,7 +191,7 @@ const Posts = (props: Props) => {
                             <p className='mt-5 text-textLight3'>joined 6 months ago</p>
                         </div>
                         <div className='flex flex-col bg-white dark:bg-backgroundDark2 p-5 rounded-2xl mb-10 gap-[15px]'>
-                            <h3 className='text-textLight1 dark:text-textDark1 font-semibold text-lg'>More from Mansurul Haque</h3>
+                            <h3 className='text-textLight1 dark:text-textDark1 font-semibold text-lg'>More from {creatorInfo?.username}</h3>
                             <div className='border border-backgroundLight3 dark:border-backgroundDark4' />
                             {additionalPosts.map((post, index) => (
                                 <div key={post.title + index} className='flex flex-col font-semibold text-xs'>
