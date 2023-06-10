@@ -1,17 +1,34 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { useTheme } from 'next-themes'
 
 import { Navbar, PodcastCard, Title } from '../../components'
-import { categories, meetups } from '../../constants/meetups'
+import { categories } from '../../constants/meetups'
 import { podcasts } from '../../constants/constants'
 
 type Props = {}
 
 const Meetups = (props: Props) => {
     const { theme } = useTheme()
+    const [meetups, setMeetups] = useState<Meetup[]>([])
+
+    const getMeetups = async () => {
+        try {
+            const response = await fetch('/api/meetups')
+            const data = await response.json()
+            console.log(data, 'data')
+            setMeetups(data)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    useEffect(() => {
+        getMeetups()
+    }, [])
+
     return (
         <div className='bg-backgroundLight1 dark:bg-backgroundDark1 h-auto'>
             <Navbar />

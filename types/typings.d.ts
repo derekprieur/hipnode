@@ -27,3 +27,13 @@ interface Session {
     id: string
     name: string
 }
+
+interface Meetup {
+    title: string
+    image: string
+    organizer: string
+    location: string
+    date: string
+    description: string 
+    tags: string[]   
+}

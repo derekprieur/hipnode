@@ -26,3 +26,18 @@ export const POST = async (req: any) => {
         })
     }
 }
+
+export const GET = async (req: any) => {
+    try {
+        await connectToDB();
+        const meetups = await Meetup.find({});
+        return new Response(JSON.stringify(meetups), {
+            status: 200,
+        })
+    } catch (error) {
+        console.log(error);
+        return new Response("Failed to fetch meetups", {
+            status: 500,
+        })
+    }
+}
