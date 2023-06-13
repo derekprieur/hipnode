@@ -1,10 +1,11 @@
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 
 import { PostMetrics, TagBubble } from '../components'
-import Link from 'next/link'
+import { getCommentCount } from '../utils/getCommentCount'
 
 type Props = {
     post: Post
@@ -22,6 +23,9 @@ const PostCard = ({ post }: Props) => {
     })
     const { data: session } = useSession()
     const router = useRouter()
+    const commentCount = getCommentCount(post)
+
+    console.log(post, 'post');
 
     const checkIfFavorited = async () => {
         if (userInfo.favorites.includes(post?._id)) {
@@ -47,11 +51,13 @@ const PostCard = ({ post }: Props) => {
             });
 
             const data = await response.json();
+
             if (favorited) {
-                post.likeCount = post.likeCount - 1;
+                post.likeCount -= 1;
             } else {
-                post.likeCount = post.likeCount + 1;
+                post.likeCount += 1;
             }
+
             setFavorited(prev => !prev);
         } catch (error) {
             console.log(error);
@@ -122,7 +128,7 @@ const PostCard = ({ post }: Props) => {
                             <p className='text-[10px] text-textLight3'>3 weeks ago</p>
                         </div>
                     </div>
-                    <PostMetrics viewCount={post.viewCount} likeCount={post.likeCount} commentCount={post.commentCount} />
+                    <PostMetrics viewCount={post.viewCount} likeCount={post.likeCount} commentCount={commentCount} />
                 </div>
             </div>
         </div>

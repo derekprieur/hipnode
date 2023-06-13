@@ -3,16 +3,22 @@
 import React, { useEffect, useState } from 'react'
 import { MobileNav, Navbar, PostCommentCard } from '../../../components'
 import Image from 'next/image'
-import { additionalPosts, postComments, postContent, postDetails, postTags, reportOptions } from '../../../constants/post'
+import { additionalPosts, postContent, postDetails, reportOptions } from '../../../constants/post'
 import { useSession } from 'next-auth/react'
+import { getCommentCount } from '@utils/getCommentCount'
 
 const Posts = ({ params }: { params: { id: string } }) => {
     const [isFollowing, setIsFollowing] = useState(false)
     const [reportModalShowing, setReportModalShowing] = useState(false)
+    const [comment, setComment] = useState('')
     const [postInfo, setPostInfo] = useState<Post>()
     const [creatorInfo, setCreatorInfo] = useState<User>()
     const [signedInUserInfo, setSignedInUserInfo] = useState<User>()
+    const [isReplyingTo, setIsReplyingTo] = useState<User>()
+    const [commentBeingRepliedToId, setCommentBeingRepliedToId] = useState('')
     const { data: session } = useSession()
+
+    console.log(postInfo, 'postInfo');
 
     const handleReportToggle = () => {
         setReportModalShowing(prev => !prev)
@@ -104,6 +110,38 @@ const Posts = ({ params }: { params: { id: string } }) => {
         }
     }
 
+    const handleSubmitComment = async (e: React.SyntheticEvent) => {
+        e.preventDefault();
+        console.log(comment, 'comment');
+
+        // @ts-ignore
+        if (session === null || session.user === undefined || !session?.user.id) return;
+
+        try {
+            const response = await fetch(`/api/comments`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                // @ts-ignore
+                body: JSON.stringify({ comment, postId: params.id, userId: session.user.id, replyingTo: isReplyingTo, commentBeingRepliedToId }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const data = await response.json();
+            console.log('Comment submitted successfully:', data);
+
+            setComment('');
+            getPostInfo();
+
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+
     useEffect(() => {
         getPostInfo();
     }, [])
@@ -116,10 +154,12 @@ const Posts = ({ params }: { params: { id: string } }) => {
         checkIfFollowing();
     }, [session, creatorInfo])
 
+    if (!signedInUserInfo) return null;
+
     return (
         <div className='relative'>
             <Navbar />
-            <div className={`p-5 lg:px-10 bg-backgroundLight1 dark:bg-backgroundDark1 h-max sm:h-screen md:h-max lg:h-screen flex flex-col lg:flex-row justify-between gap-5 ${reportModalShowing && 'blur-sm'}`}>
+            <div className={`p-5 lg:px-10 bg-backgroundLight1 dark:bg-backgroundDark1 h-max sm:h-screen md:h-max lg:h-auto flex flex-col lg:flex-row justify-between gap-5 ${reportModalShowing && 'blur-sm'}`}>
                 <div className='flex flex-col lg:flex-row gap-5'>
                     <div className='flex flex-col gap-5 lg:flex-row-reverse lg:items-start'>
                         <div>
@@ -135,20 +175,25 @@ const Posts = ({ params }: { params: { id: string } }) => {
                                     <p key={index} className='text-textLight3 text-xs lg:text-base'>{content}</p>
                                 ))}
                                 <div className='mt-[16px] flex gap-4'>
-                                    <Image src='/assets/user1.png' alt='user' width={40} height={40} className='object-contain flex lg:hidden' />
-                                    <Image src='/assets/user1.png' alt='user' width={44} height={44} className='object-contain hidden lg:flex' />
+                                    <Image src={`${signedInUserInfo?.image}`} alt='user' width={40} height={40} className='object-contain flex lg:hidden rounded-full' />
+                                    <Image src={`${signedInUserInfo?.image}`} alt='user' width={44} height={44} className='object-contain hidden lg:flex rounded-full' />
                                     <div className='flex border px-4 py-2 rounded-full flex-1 justify-between'>
-                                        <input type="text" placeholder='Say something...' className='placeholder:text-textDark3 bg-transparent flex lg:hidden w-full outline-none' />
-                                        <input type="text" placeholder='Say something nice to follownishant...' className='placeholder:text-textDark3 bg-transparent hidden lg:flex w-full outline-none' />
+                                        <form onSubmit={handleSubmitComment} className='w-full'>
+                                            <input type="text" placeholder={`${isReplyingTo ? 'Replying to ' + isReplyingTo.username : 'Say something... '}`} className={`placeholder:text-textDark3 bg-transparent flex lg:hidden w-full outline-none ${isReplyingTo && 'placeholder:text-backgroundDark4'}`} value={comment} onChange={e => setComment(e.target.value)} />
+                                            <input type="text" placeholder={`${isReplyingTo ? 'Replying to ' + isReplyingTo.username : 'Say something nice to ' + signedInUserInfo?.username}`} className={`placeholder:text-textDark3 bg-transparent hidden lg:flex min-w-full w-full outline-none flex-1 ${isReplyingTo && 'placeholder:text-backgroundDark4'}`} onKeyDown={(e) => { if (e.key === 'Enter') { handleSubmitComment(e) } }} value={comment} onChange={e => setComment(e.target.value)} />
+                                            <button type='submit' className='hidden'>Submit</button>
+                                        </form>
                                         <Image src='/assets/smiley.png' alt='smiley' width={24} height={24} className='object-contain' />
                                     </div>
                                 </div>
                                 <div className='hidden flex-col gap-5 lg:gap-[30px] lg:flex lg:mt-[30px]'>
-                                    {postComments.map((comment, index) => (
-                                        <div key={comment.avatar + index} className='flex flex-col gap-5'>
-                                            <PostCommentCard comment={comment} />
+                                    {postInfo?.comments.map((comment, index) => (
+                                        <div key={comment.content + index} className='flex flex-col gap-5'>
+                                            <PostCommentCard comment={comment} setIsReplyingTo={setIsReplyingTo} setCommentBeingRepliedToId={setCommentBeingRepliedToId} />
                                             <div className='pl-16'>
-                                                <PostCommentCard comment={comment.reply} />
+                                                {comment.replies?.map((reply, index) => (
+                                                    <PostCommentCard key={reply.content + index} comment={reply} isReply={true} setIsReplyingTo={setIsReplyingTo} setCommentBeingRepliedToId={setCommentBeingRepliedToId} />
+                                                ))}
                                             </div>
                                         </div>
                                     ))}
@@ -161,16 +206,18 @@ const Posts = ({ params }: { params: { id: string } }) => {
                                     <div className='py-[5px] px-1 bg-backgroundLight1 dark:bg-backgroundDark3 rounded-md'>
                                         <Image src={detail.icon} alt={detail.type} width={20} height={20} className='object-contain' />
                                     </div>
-                                    <p className='text-textLight3 lg:font-semibold'>{detail.type.toLowerCase() === 'likes' ? postInfo?.likeCount : detail.type.toLowerCase() === 'comments' ? postInfo?.commentCount : detail.type.toLowerCase() === 'shares' ? 0 : ''} {detail?.type}</p>
+                                    <p className='text-textLight3 lg:font-semibold'>{detail.type.toLowerCase() === 'likes' ? postInfo?.likeCount : detail.type.toLowerCase() === 'comments' ? getCommentCount(postInfo) : detail.type.toLowerCase() === 'shares' ? 0 : ''} {detail?.type}</p>
                                 </div>
                             ))}
                         </div>
                         <div className='flex flex-col gap-5 lg:hidden'>
-                            {postComments.map((comment, index) => (
-                                <div key={comment.avatar + index} className='flex flex-col gap-5'>
-                                    <PostCommentCard comment={comment} />
+                            {postInfo?.comments.map((comment, index) => (
+                                <div key={comment.content + index} className='flex flex-col gap-5'>
+                                    <PostCommentCard comment={comment} setIsReplyingTo={setIsReplyingTo} setCommentBeingRepliedToId={setCommentBeingRepliedToId} />
                                     <div className='pl-16'>
-                                        <PostCommentCard comment={comment.reply} />
+                                        {comment.replies?.map((reply, index) => (
+                                            <PostCommentCard key={reply.content + index} comment={reply} isReply={true} setIsReplyingTo={setIsReplyingTo} setCommentBeingRepliedToId={setCommentBeingRepliedToId} />
+                                        ))}
                                     </div>
                                 </div>
                             ))}
@@ -211,7 +258,7 @@ const Posts = ({ params }: { params: { id: string } }) => {
             <MobileNav />
             {reportModalShowing && (
                 <div className='w-full max-w-[335px] lg:max-w-[477px] bg-white dark:bg-backgroundDark3 rounded-2xl absolute z-40 left-1/2 -translate-x-1/2 top-24 lg:top-32 p-5'>
-                    <h3 className='font-semibold text-lg'>Why are you reporting this post by @Mansurul Haque?</h3>
+                    <h3 className='font-semibold text-lg'>Why are you reporting this post by @{creatorInfo?.username}?</h3>
                     <div className='mt-[30px] flex flex-wrap gap-5'>
                         {reportOptions.map((option, index) => (
                             <div key={option + index} className='py-[10px] px-5 bg-backgroundLight3 dark:bg-backgroundDark2 rounded-[20px] border border-backgroundLight4 dark:border-textLight1 text-xs'>{option}</div>

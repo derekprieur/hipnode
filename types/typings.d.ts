@@ -7,6 +7,8 @@ interface Post {
         likeCount: number
         commentCount: number
         _id: string
+        comments: Comment[]
+        likes: string[]
 }
 
 interface User {
@@ -36,4 +38,12 @@ interface Meetup {
     date: string
     description: string 
     tags: string[]   
+}
+
+interface Comment {
+    user: string
+    date: string
+    content: string
+    replies: Comment[]
+    _id: string
 }

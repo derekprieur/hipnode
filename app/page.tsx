@@ -26,8 +26,7 @@ const Home = () => {
   const dispatch = useDispatch();
   const { data: session } = useSession();
   const title = useSelector((state: RootState) => state.post.title);
-  console.log(currentSortType, 'currentSortType')
-  console.log(session, 'session')
+  console.log(posts, 'posts')
 
   const getCreatorInfo = async () => {
     try {
@@ -39,9 +38,6 @@ const Home = () => {
       console.log(error, 'error');
     }
   }
-
-  console.log(userInfo, 'userInfo')
-  console.log(posts, 'posts')
 
   const getPosts = async () => {
     try {

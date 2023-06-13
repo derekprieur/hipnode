@@ -35,7 +35,35 @@ commentCount:{
 createdAt:{
     type: Date,
     default: Date.now,
-}
+},
+comments: [
+    {
+        user: {
+            type: Schema.Types.ObjectId,
+            ref: "User",
+        },
+        date: {
+            type: Date,
+        },
+        content: {
+            type: String,
+        },
+        replies: [
+            {
+                user: {
+                    type: Schema.Types.ObjectId,
+                    ref: "User",
+                },
+                date: {
+                    type: Date,
+                },
+                content: {
+                    type: String,
+                },
+            },
+        ]
+    }
+]
 })
 
 const Post = models.Post || model('Post', PostSchema);
