@@ -9,6 +9,7 @@ import { getProviders, signIn, ClientSafeProvider } from 'next-auth/react';
 
 import { DarkModeToggle, FeatureCard, Header, InputCard, SignupCard } from '../../components';
 import { features, signupOptions } from '../../constants/constants';
+import toast, { Toaster } from 'react-hot-toast';
 
 const Signin = () => {
     const { theme } = useTheme();
@@ -28,11 +29,7 @@ const Signin = () => {
     }
 
     const handleClick = async () => {
-        try {
-            const response = await axios.post('/api/signin', { email, password })
-        } catch (error) {
-            console.log(error);
-        }
+        toast('Username/password login temporarily disabled. Please use provider login instead. ❌🔧')
     }
 
     return (
@@ -61,8 +58,20 @@ const Signin = () => {
             </div>
             <div className="bg-backgroundLight1 dark:bg-backgroundDark1 lg:bg-backgroundLight2 dark:lg:bg-backgroundDark2 lg:w-1/2 px-6 lg:px-10 lg:pt-11 xl:pl-[86px] xl:pr-[126px]">
                 <div
-                    className={`lg:bg-backgroundLight2 lg:dark:bg-backgroundDark2 flex-1 lg:mt-[98px] md:px-16 lg:px-0 2xl:px-32 xl:pt-16 `}
+                    className={`lg:bg-backgroundLight2 lg:dark:bg-backgroundDark2 flex-1 lg:mt-[98px] md:px-16 lg:px-0 2xl:px-32 xl:pt-16`}
                 >
+                    <div className="flex flex-col gap-5 pb-[30px]">
+                        {signupOptions.map((option, index) => (
+                            <SignupCard key={index} text={option.text} type={'Sign In'} />
+                        ))}
+                    </div>
+                    <div className="flex items-center gap-5 mb-[30px]">
+                        <div className="bg-backgroundLight4 dark:bg-backgroundDark4 w-full h-[1px]" />
+                        <p className="text-textLight1 dark:text-textDark1 text-lg font-semibold">
+                            or
+                        </p>
+                        <div className="bg-backgroundLight4 dark:bg-backgroundDark4 w-full h-[1px]" />
+                    </div>
                     <div className="mb-5">
                         <InputCard text="Email" placeholder="Enter email address" />
                     </div>
@@ -79,20 +88,9 @@ const Signin = () => {
                             <span className="text-textAlt1 font-semibold">Join the community!</span>
                         </Link>
                     </p>
-                    <div className="flex flex-col gap-5 pb-[30px]">
-                        <div className="flex items-center gap-5 mb-[30px]">
-                            <div className="bg-backgroundLight4 dark:bg-backgroundDark4 w-full h-[1px]" />
-                            <p className="text-textLight1 dark:text-textDark1 text-lg font-semibold">
-                                or
-                            </p>
-                            <div className="bg-backgroundLight4 dark:bg-backgroundDark4 w-full h-[1px]" />
-                        </div>
-                        {signupOptions.map((option, index) => (
-                            <SignupCard key={index} text={option.text} icon={option.icon} />
-                        ))}
-                    </div>
                 </div>
             </div>
+            <Toaster />
         </div>
     )
 }

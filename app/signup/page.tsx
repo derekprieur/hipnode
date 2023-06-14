@@ -3,6 +3,7 @@
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
+import toast, { Toaster } from "react-hot-toast";
 
 import {
     FeatureCard,
@@ -53,7 +54,10 @@ const Signup = () => {
     }
 
     const handleClick = () => {
-        if (signupStep < 5) {
+        if (signupStep === 1) {
+            toast('Username/password login temporarily disabled. Please use provider login instead. ❌🔧')
+        }
+        else if (signupStep < 5) {
             setSignupStep((prev) => prev + 1);
         }
     };
@@ -98,6 +102,20 @@ const Signup = () => {
                 <div
                     className={`lg:bg-backgroundLight2 lg:dark:bg-backgroundDark2 flex-1 lg:mt-[98px] md:px-16 lg:px-0 2xl:px-32 xl:pt-16 `}
                 >
+                    {(signupStep === 1 || signupStep === 5) && (
+                        <div className="flex flex-col gap-5">
+                            {signupOptions.map((option, index) => (
+                                <SignupCard key={index} text={option.text} type="Sign Up" />
+                            ))}
+                            <div className="flex items-center gap-5 mb-[30px] mt-5">
+                                <div className="bg-backgroundLight4 dark:bg-backgroundDark4 w-full h-[1px]" />
+                                <p className="text-textLight1 dark:text-textDark1 text-lg font-semibold">
+                                    or
+                                </p>
+                                <div className="bg-backgroundLight4 dark:bg-backgroundDark4 w-full h-[1px]" />
+                            </div>
+                        </div>
+                    )}
                     {signupStep === 1 ? (
                         <InputCard text='Choose a username' placeholder="e.g. Hipnode123" />
                     ) : signupStep === 2 ? (
@@ -151,22 +169,9 @@ const Signup = () => {
                             <span className="text-textAlt1 font-semibold">Sign in.</span>
                         </Link>
                     </p>
-                    {(signupStep === 1 || signupStep === 5) && (
-                        <div className="flex flex-col gap-5 pb-[30px]">
-                            <div className="flex items-center gap-5 mb-[30px]">
-                                <div className="bg-backgroundLight4 dark:bg-backgroundDark4 w-full h-[1px]" />
-                                <p className="text-textLight1 dark:text-textDark1 text-lg font-semibold">
-                                    or
-                                </p>
-                                <div className="bg-backgroundLight4 dark:bg-backgroundDark4 w-full h-[1px]" />
-                            </div>
-                            {signupOptions.map((option, index) => (
-                                <SignupCard key={index} text={option.text} icon={option.icon} />
-                            ))}
-                        </div>
-                    )}
                 </div>
             </div>
+            <Toaster />
         </div>
     );
 };

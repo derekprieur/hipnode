@@ -28,3 +28,5 @@ export { default as Dropdown } from "./Dropdown";
 export { default as GroupTypeCard } from "./GroupTypeCard";
 export { default as GroupAdminCard } from "./GroupAdminCard";
 export { default as GroupAboutCard } from "./GroupAboutCard";
+export { default as PodcastPageCard } from "./PodcastPageCard";
+export { default as PodcastFilter } from "./PodcastFilter";

@@ -7,13 +7,12 @@ import { BsGoogle, BsDiscord, BsGithub } from 'react-icons/bs'
 
 interface SignupCardProps {
     text: string,
-    icon: string
+    type: string
 }
 
-const SignupCard = ({ text, icon }: SignupCardProps) => {
+const SignupCard = ({ text, type }: SignupCardProps) => {
     const { data: session } = useSession()
     const router = useRouter()
-    const { theme } = useTheme()
 
     useEffect(() => {
         if (session) router.push('/')
@@ -27,7 +26,7 @@ const SignupCard = ({ text, icon }: SignupCardProps) => {
     return (
         <div className='text-textLight1 dark:text-textDark1 bg-backgroundLight2 lg:bg-backgroundLight3 dark:bg-backgroundDark3 text-center py-3 rounded-lg flex items-center justify-center gap-[10px] font-semibold w-full mx-auto cursor-pointer' onClick={handleSignIn} >
             {text === 'Google' ? <BsGoogle /> : text === 'Discord' ? <BsDiscord /> : <BsGithub />}
-            Sign Up With {text}
+            {type} With {text}
         </div>
     )
 }

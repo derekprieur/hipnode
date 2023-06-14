@@ -26,7 +26,6 @@ const Home = () => {
   const dispatch = useDispatch();
   const { data: session } = useSession();
   const title = useSelector((state: RootState) => state.post.title);
-  console.log(posts, 'posts')
 
   const getCreatorInfo = async () => {
     try {

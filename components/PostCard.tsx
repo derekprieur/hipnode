@@ -25,8 +25,6 @@ const PostCard = ({ post }: Props) => {
     const router = useRouter()
     const commentCount = getCommentCount(post)
 
-    console.log(post, 'post');
-
     const checkIfFavorited = async () => {
         if (userInfo.favorites.includes(post?._id)) {
             setFavorited(true)

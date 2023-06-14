@@ -18,6 +18,7 @@ const Profile = ({ params }: { params: { id: string } }) => {
     const [userInfo, setUserInfo] = useState<User>({ name: '', username: '', email: '', image: '', description: '', following: [], favorites: [], followers: [], _id: '' })
     const [currentSelectedType, setCurrentSelectedType] = useState('Posts')
     const { data: session } = useSession()
+    console.log(session, 'session');
 
     const getCreatorInfo = async () => {
         try {
@@ -120,12 +121,12 @@ const Profile = ({ params }: { params: { id: string } }) => {
                     <div className='flex flex-col items-center px-5 pb-[30px]'>
                         <h1 className='mt-[80px] text-[26px] font-semibold'>{userInfo.username}</h1>
                         <h3 className='text-textLight3'>User Interface Designer</h3>
-                        <div className='flex gap-[10px] mt-5'>
+                        {(userInfo._id != loggedInUserInfo?._id) && <div className='flex gap-[10px] mt-5'>
                             <button className='py-[6px] w-[124px] rounded-md bg-backgroundAlt5 font-semibold text-white' onClick={handleFollow}>{isFollowed ? 'Following' : 'Follow'}</button>
                             <div className='bg-backgroundAlt4 dark:bg-backgroundDark3 flex items-center justify-center p-2 rounded-md shrink-0'>
                                 <Image src='/assets/profile-message.png' alt='message' width={20} height={20} className='shrink-0' />
                             </div>
-                        </div>
+                        </div>}
                         <p className='font-semibold mt-5 dark:text-textDark2'>{userInfo.followers.length} Followers  •  0 Points</p>
                         <p className='font-semibold mt-5'>Following {userInfo.following.length}</p>
                         <div className='flex mt-[15px] gap-[14px] lg:flex-wrap'>
