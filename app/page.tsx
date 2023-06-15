@@ -70,7 +70,7 @@ const Home = () => {
 
   return (
     <div>
-      <Navbar />
+      <Navbar setShowChatBox={setShowChatBox} />
       <div className="p-5 md:p-10 bg-backgroundLight1 dark:bg-backgroundDark1 h-max sm:h-screen md:h-max flex flex-col lg:flex-row justify-between gap-5">
         <div className="flex flex-col gap-5 shrink-0">
           <div className="flex lg:flex-col bg-white dark:bg-backgroundDark2 p-[10px] rounded-[10px] justify-between gap-[10px] ">
@@ -100,7 +100,7 @@ const Home = () => {
           </div>
         </div>
         <div>
-          <div className="flex p-[14px] lg:p-5 bg-white dark:bg-backgroundDark2 mt-5 lg:mt-0 rounded-[10px] gap-[10px] justify-between">
+          <div className="flex p-[14px] lg:p-5 bg-white dark:bg-backgroundDark2 mt-5 lg:mt-0 rounded-[10px] gap-[10px] justify-between items-center">
             <Image src={session ? session.user?.image || "/assets/avatar-rounded.png" : '/assets/avatar-rounded.png'} width={30} height={30} alt="avatar" className="flex lg:hidden object-contain shrink-0 rounded-full"
             />
             <Image src={session ? session.user?.image || "/assets/avatar-rounded.png" : '/assets/avatar-rounded.png'} width={40} height={40} alt="avatar" className="hidden lg:flex object-contain shrink-0 rounded-full"

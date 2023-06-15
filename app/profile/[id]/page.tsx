@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import { useTheme } from 'next-themes'
 
-import { MeetupCard, Navbar, PodcastCard, PostCard, Title } from '../../../components'
+import { ChatBox, MeetupCard, Navbar, PodcastCard, PostCard, Title } from '../../../components'
 import Image from 'next/image'
 import { categories } from '../../../constants/profile'
 import { meetups, podcasts } from '../../../constants/constants'
@@ -17,8 +17,8 @@ const Profile = ({ params }: { params: { id: string } }) => {
     const [loggedInUserInfo, setLoggedInUserInfo] = useState<User>()
     const [userInfo, setUserInfo] = useState<User>({ name: '', username: '', email: '', image: '', description: '', following: [], favorites: [], followers: [], _id: '' })
     const [currentSelectedType, setCurrentSelectedType] = useState('Posts')
+    const [showChatBox, setShowChatBox] = useState(false);
     const { data: session } = useSession()
-    console.log(session, 'session');
 
     const getCreatorInfo = async () => {
         try {
@@ -109,7 +109,7 @@ const Profile = ({ params }: { params: { id: string } }) => {
 
     return (
         <div className="bg-backgroundLight1 dark:bg-backgroundDark1 h-auto">
-            <Navbar />
+            <Navbar setShowChatBox={setShowChatBox} />
             <div className='flex flex-col lg:flex-row lg:items-start p-5 lg:py-[30px] lg:px-10 gap-5 lg:justify-center pb-20'>
                 <div className='bg-white dark:bg-backgroundDark2 rounded-2xl flex flex-col items-center lg:max-w-[210px]'>
                     <div className='relative w-full'>
@@ -124,7 +124,7 @@ const Profile = ({ params }: { params: { id: string } }) => {
                         {(userInfo._id != loggedInUserInfo?._id) && <div className='flex gap-[10px] mt-5'>
                             <button className='py-[6px] w-[124px] rounded-md bg-backgroundAlt5 font-semibold text-white' onClick={handleFollow}>{isFollowed ? 'Following' : 'Follow'}</button>
                             <div className='bg-backgroundAlt4 dark:bg-backgroundDark3 flex items-center justify-center p-2 rounded-md shrink-0'>
-                                <Image src='/assets/profile-message.png' alt='message' width={20} height={20} className='shrink-0' />
+                                <Image src='/assets/profile-message.png' alt='message' width={20} height={20} className='shrink-0 cursor-pointer' onClick={() => setShowChatBox(true)} />
                             </div>
                         </div>}
                         <p className='font-semibold mt-5 dark:text-textDark2'>{userInfo.followers.length} Followers  •  0 Points</p>
@@ -217,6 +217,7 @@ const Profile = ({ params }: { params: { id: string } }) => {
                     </div>
                 </div>
             </div>
+            {showChatBox && <ChatBox />}
         </div>
     )
 }

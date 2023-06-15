@@ -9,9 +9,11 @@ import { useRouter } from 'next/navigation'
 import { MessageCard, NotificationCard, NotificationType, SearchInput, SettingsCard, Title } from './../components'
 import { messages, navOptions, notificationTypes, notifications } from '../constants/constants'
 
-type Props = {}
+type Props = {
+    setShowChatBox: React.Dispatch<React.SetStateAction<boolean>>
+}
 
-const Navbar = (props: Props) => {
+const Navbar = ({ setShowChatBox }: Props) => {
     const { theme } = useTheme();
     const router = useRouter();
     const { data: session } = useSession();
@@ -23,14 +25,20 @@ const Navbar = (props: Props) => {
 
     const toggleMessages = () => {
         setShowingMessages(!showingMessages)
+        setShowingNotifications(false)
+        setShowingSettings(false)
     }
 
     const toggleNotifications = () => {
         setShowingNotifications(!showingNotifications)
+        setShowingMessages(false)
+        setShowingSettings(false)
     }
 
     const toggleSettings = () => {
         setShowingSettings(!showingSettings)
+        setShowingMessages(false)
+        setShowingNotifications(false)
     }
 
     const handleSignOut = () => {
@@ -80,7 +88,7 @@ const Navbar = (props: Props) => {
                             </div>
                             <div className="flex flex-col gap-5">
                                 {messages.map((message, index) => (
-                                    <MessageCard key={index} message={message} />
+                                    <MessageCard key={index} message={message} setShowChatBox={setShowChatBox} />
                                 ))}
                             </div>
                             <button className='w-full text-center mt-5 text-textAlt3 font-semibold text-sm'>See all in Messenger</button>

@@ -142,8 +142,30 @@ const Posts = ({ params }: { params: { id: string } }) => {
         }
     };
 
+    const incrementViewCount = async () => {
+        try {
+            const response = await fetch(`/api/posts/${params.id}/views`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const data = await response.json();
+            console.log('View count incremented successfully:', data);
+
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
     useEffect(() => {
         getPostInfo();
+        incrementViewCount();
     }, [])
 
     useEffect(() => {
