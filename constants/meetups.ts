@@ -1,6 +1,6 @@
 export const categories = [
-    'Full Time',
-    'Part Time',
+    'Full-time',
+    'Part-time',
     'Internship',
     'Remote',
     'Contract',

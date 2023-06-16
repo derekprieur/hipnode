@@ -4,15 +4,16 @@ import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { useTheme } from 'next-themes'
 
-import { Navbar, PodcastCard, Title } from '../../components'
+import { ChatBox, MobileNav, Navbar, PodcastCard, Title } from '../../components'
 import { categories } from '../../constants/meetups'
 import { podcasts } from '../../constants/constants'
+import Link from 'next/link'
 
-type Props = {}
-
-const Meetups = (props: Props) => {
+const Meetups = () => {
     const { theme } = useTheme()
     const [meetups, setMeetups] = useState<Meetup[]>([])
+    const [showChatBox, setShowChatBox] = useState(false)
+    const [enabledCategories, setEnabledCategories] = useState(categories)
 
     const getMeetups = async () => {
         try {
@@ -25,13 +26,25 @@ const Meetups = (props: Props) => {
         }
     }
 
+    const toggleCategory = (e: React.MouseEvent<HTMLDivElement>) => {
+        const category = e.currentTarget.children[0].textContent
+        if (!category) return
+        if (enabledCategories.includes(category)) {
+            setEnabledCategories(enabledCategories.filter((enabledCategory) => enabledCategory !== category))
+        } else {
+            setEnabledCategories([...enabledCategories, category])
+        }
+    }
+
     useEffect(() => {
         getMeetups()
     }, [])
 
+    if (!meetups.length) return null
+
     return (
         <div className='bg-backgroundLight1 dark:bg-backgroundDark1 h-auto'>
-            <Navbar />
+            <Navbar setShowChatBox={setShowChatBox} />
             <div className='flex flex-col lg:flex-row items-center lg:items-start p-5 lg:py-[30px] lg:px-10 gap-5 lg:justify-center'>
                 <Image src='/assets/meetup-banner.png' alt='banner' width={335} height={168} className='shrink-0 object-contain flex lg:hidden' />
                 <div className='bg-white dark:bg-backgroundDark2 flex flex-col w-full p-5 rounded-2xl lg:max-w-[210px]'>
@@ -41,11 +54,13 @@ const Meetups = (props: Props) => {
                     </div>
                     <div className='flex flex-col gap-3 mt-5'>
                         {categories.map((category, index) => (
-                            <div key={category + index} className='flex justify-between items-center'>
+                            <div key={category + index} className='flex justify-between items-center' onClick={toggleCategory}>
                                 <h4 className='font-semibold text-xs'>{category}</h4>
-                                <div className='w-4 h-4 bg-backgroundAlt6 flex justify-center items-center'>
+                                {enabledCategories.includes(category) ? <div className='w-4 h-4 bg-backgroundAlt6 flex justify-center items-center'>
                                     <Image src='/assets/check-filter.png' alt='check-filter' width={8} height={6} className='shrink-0 object-contain' />
-                                </div>
+                                </div> :
+                                    <div className='w-4 h-4 flex justify-center items-center border border-textLight3'>
+                                    </div>}
                             </div>
                         ))}
                     </div>
@@ -53,7 +68,8 @@ const Meetups = (props: Props) => {
                 <div className='flex flex-col'>
                     <div className='flex flex-col w-full gap-5 max-w-[785px]'>
                         {meetups.map((meetup, index) => (
-                            <div key={meetup.title + index} className='bg-white dark:bg-backgroundDark2 rounded-2xl w-full flex flex-col p-[14px] lg:p-5 gap-4'>
+                            <div key={meetup.title + index} className={`bg-white dark:bg-backgroundDark2 rounded-2xl w-full flex-col p-[14px] lg:p-5 gap-4 ${enabledCategories.some((enabledCategory) => meetup.tags.includes(enabledCategory)) ? 'flex' : 'hidden'
+                                }`}>
                                 <div className='flex items-start justify-between'>
                                     <div className='flex'>
                                         <Image src={meetup.image} alt={meetup.title} width={48} height={48} className='shrink-0 flex lg:hidden' />
@@ -91,7 +107,9 @@ const Meetups = (props: Props) => {
                 <div className='flex flex-col gap-5'>
                     <Image src='/assets/meetup-banner.png' alt='banner' width={335} height={168} className='shrink-0 object-contain hidden lg:flex' />
                     <div className="bg-white dark:bg-backgroundDark2 rounded-[10px] p-5 mt-1 mb-24 lg:max-w-[335px]">
-                        <Title title="Podcasts" />
+                        <Link href='/podcasts'>
+                            <Title title="Podcasts" />
+                        </Link>
                         <div className="flex flex-col gap-5 mt-5">
                             {podcasts.map((podcast, index) => (
                                 <PodcastCard key={index} podcast={podcast} />
@@ -100,6 +118,8 @@ const Meetups = (props: Props) => {
                     </div>
                 </div>
             </div>
+            {showChatBox && <ChatBox setShowChatBox={setShowChatBox} />}
+            <MobileNav />
         </div>
     )
 }

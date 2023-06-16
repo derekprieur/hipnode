@@ -8,6 +8,7 @@ import Image from 'next/image'
 import { categories } from '../../../constants/profile'
 import { meetups, podcasts } from '../../../constants/constants'
 import { useSession } from 'next-auth/react'
+import Link from 'next/link'
 
 const Profile = ({ params }: { params: { id: string } }) => {
     const [isFollowed, setIsFollowed] = useState(false)
@@ -138,7 +139,7 @@ const Profile = ({ params }: { params: { id: string } }) => {
                         <div className='flex lg:flex-col mt-5 items-center gap-[10px]'>
                             <div className='flex items-center gap-[10px]'>
                                 <Image src={theme === 'dark' ? '/assets/world-dark.png' : '/assets/world.png'} alt='world' width={14} height={14} />
-                                <p className='lg:font-semibold'>www.uikit.to</p>
+                                <p className='lg:font-semibold'>www.derekprieur.dev</p>
                             </div>
                             <div className='flex ml-[10px] lg:ml-0 gap-5'>
                                 <Image src={theme === 'dark' ? '/assets/twitter-outline-dark.png' : '/assets/twitter-outline.png'} alt='twitter' width={20} height={20} />
@@ -217,7 +218,7 @@ const Profile = ({ params }: { params: { id: string } }) => {
                     </div>
                 </div>
             </div>
-            {showChatBox && <ChatBox />}
+            {showChatBox && <ChatBox setShowChatBox={setShowChatBox} />}
         </div>
     )
 }

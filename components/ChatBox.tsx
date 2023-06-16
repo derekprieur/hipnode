@@ -4,9 +4,11 @@ import { useTheme } from 'next-themes'
 
 import { ChatMessage } from './../components'
 
-type Props = {}
+type Props = {
+    setShowChatBox: React.Dispatch<React.SetStateAction<boolean>>
+}
 
-const ChatBox = (props: Props) => {
+const ChatBox = ({ setShowChatBox }: Props) => {
     const { theme } = useTheme()
     return (
         <div className='w-full max-w-[450px] h-[402px] lg:w-[450px] lg:h-[450px] bg-white dark:bg-backgroundDark3 rounded-2xl py-[23px] px-5 flex flex-col fixed bottom-[24px] right-5 z-10'>
@@ -21,7 +23,7 @@ const ChatBox = (props: Props) => {
                 </div>
                 <div className='flex gap-5'>
                     <Image src={theme === 'dark' ? '/assets/expand-dark.png' : '/assets/expand.png'} alt='expand' width={20} height={20} className='object-contain' />
-                    <Image src={theme === 'dark' ? '/assets/minimize-dark.png' : '/assets/minimize.png'} alt='minimize' width={20} height={20} className='object-contain' />
+                    <Image src={theme === 'dark' ? '/assets/minimize-dark.png' : '/assets/minimize.png'} alt='minimize' width={20} height={20} className='object-contain cursor-pointer' onClick={() => setShowChatBox(false)} />
                 </div>
             </div>
             <div className='bg-backgroundLight3 h-[1px] mt-[15px] mb-5' />

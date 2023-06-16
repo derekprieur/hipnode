@@ -15,7 +15,7 @@ type Props = {
 
 const GroupTypeCard = ({ groupType, index }: Props) => {
     return (
-        <div className={`${index > 0 && 'hidden lg:flex lg:flex-col lg:items-start'}`}>
+        <div className={`${index > 0 && 'hidden lg:flex lg:flex-col lg:items-start shrink-0'}`}>
             <div className={`bg-backgroundAlt7 flex p-[10px] rounded-[10px] items-center justify-between ${index > 0 && 'hidden lg:flex'}`}>
                 <div className="flex flex-col">
                     <div className="flex gap-[6px] items-center">
@@ -32,7 +32,7 @@ const GroupTypeCard = ({ groupType, index }: Props) => {
                         <Image src={group.image} alt={group.title} width={34} height={34} className="rounded-full" />
                         <div className='flex flex-col'>
                             <h3 className='font-semibold text-xs'>{group.type}</h3>
-                            <p className='text-[10px] text-textLight3'>{group.title}</p>
+                            <p className='text-[10px] text-textLight3 truncate'>{group.title}</p>
                         </div>
                     </div>
                 ))}

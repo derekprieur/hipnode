@@ -1,15 +1,18 @@
 'use client'
 
-import { MeetupCard, Navbar, PodcastFilter, PodcastPageCard, Title } from '@components'
+import { ChatBox, MeetupCard, MobileNav, Navbar, PodcastFilter, PodcastPageCard, Title } from '@components'
 import { meetups } from '@constants/constants'
 import { podcasts } from '@constants/podcasts'
 import Image from 'next/image'
-import React from 'react'
+import Link from 'next/link'
+import React, { useState } from 'react'
 
 const Podcasts = () => {
+    const [showChatBox, setShowChatBox] = useState(false)
+
     return (
         <div className='bg-backgroundLight1 dark:bg-backgroundDark1 h-auto lg:h-screen'>
-            <Navbar />
+            <Navbar setShowChatBox={setShowChatBox} />
             <div className='p-5 lg:py-[30px] lg:px-10 flex flex-col lg:flex-row lg:items-start lg:gap-5 justify-center'>
                 <Image src='/assets/podcast-cover.png' alt='start podcast' width={335} height={168} className='mx-auto flex lg:hidden' />
                 <div className='hidden lg:flex'>
@@ -35,7 +38,9 @@ const Podcasts = () => {
                 <div className='flex flex-col gap-5'>
                     <Image src='/assets/podcast-cover.png' alt='start podcast' width={335} height={168} className='mx-auto hidden lg:flex' />
                     <div className="bg-white dark:bg-backgroundDark2 rounded-[10px] p-5 mt-[22px] lg:mt-0">
-                        <Title title="Meetups" />
+                        <Link href='/meetups'>
+                            <Title title="Meetups" />
+                        </Link>
                         <div className="flex flex-col gap-5 mt-5">
                             {meetups.map((meetup, index) => (
                                 <MeetupCard key={index} meetup={meetup} />
@@ -44,6 +49,8 @@ const Podcasts = () => {
                     </div>
                 </div>
             </div>
+            {showChatBox && <ChatBox setShowChatBox={setShowChatBox} />}
+            <MobileNav />
         </div>
     )
 }

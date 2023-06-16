@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { MobileNav, Navbar, PostCommentCard } from '../../../components'
+import { ChatBox, MobileNav, Navbar, PostCommentCard } from '../../../components'
 import Image from 'next/image'
 import { additionalPosts, postContent, postDetails, reportOptions } from '../../../constants/post'
 import { useSession } from 'next-auth/react'
@@ -16,6 +16,7 @@ const Posts = ({ params }: { params: { id: string } }) => {
     const [signedInUserInfo, setSignedInUserInfo] = useState<User>()
     const [isReplyingTo, setIsReplyingTo] = useState<User>()
     const [commentBeingRepliedToId, setCommentBeingRepliedToId] = useState('')
+    const [showChatBox, setShowChatBox] = useState(false)
     const { data: session } = useSession()
 
     console.log(postInfo, 'postInfo');
@@ -180,7 +181,7 @@ const Posts = ({ params }: { params: { id: string } }) => {
 
     return (
         <div className='relative'>
-            <Navbar />
+            <Navbar setShowChatBox={setShowChatBox} />
             <div className={`p-5 lg:px-10 bg-backgroundLight1 dark:bg-backgroundDark1 h-max sm:h-screen md:h-max lg:h-auto flex flex-col lg:flex-row justify-between gap-5 ${reportModalShowing && 'blur-sm'}`}>
                 <div className='flex flex-col lg:flex-row gap-5'>
                     <div className='flex flex-col gap-5 lg:flex-row-reverse lg:items-start'>
@@ -276,6 +277,7 @@ const Posts = ({ params }: { params: { id: string } }) => {
                         </div>
                     </div>
                 </div>
+                {showChatBox && <ChatBox setShowChatBox={setShowChatBox} />}
             </div>
             <MobileNav />
             {reportModalShowing && (

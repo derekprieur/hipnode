@@ -7,8 +7,9 @@ import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import { useSelector } from 'react-redux'
 
-import { Dropdown, MobileNav, Navbar } from '../../components'
+import { ChatBox, Dropdown, MobileNav, Navbar } from '../../components'
 import { textOptions } from '../../constants/createPost'
+import { set } from 'mongoose'
 
 type Props = {}
 
@@ -26,14 +27,17 @@ const CreatePost = (props: Props) => {
         tags: '',
         content: '',
     })
+    const [showChatBox, setShowChatBox] = useState(false)
     const title = useSelector((state: any) => state.post.title)
 
     const toggleGroupDropdown = () => {
         setGroupDropdownOpen(!groupDropdownOpen)
+        setCreateDropdownOpen(false)
     }
 
     const toggleCreateDropdown = () => {
         setCreateDropdownOpen(!createDropdownOpen)
+        setGroupDropdownOpen(false)
     }
 
     const handleCreatePost = async () => {
@@ -83,7 +87,7 @@ const CreatePost = (props: Props) => {
 
     return (
         <div className='bg-backgroundLight1 dark:bg-backgroundDark1 h-auto pb-10'>
-            <Navbar />
+            <Navbar setShowChatBox={setShowChatBox} />
             <div className='bg-white dark:bg-backgroundDark2 rounded-2xl m-5 lg:mt-[30px] p-5 lg:p-[30px] max-w-[900px] mx-auto'>
                 <input placeholder='Title...' className='bg-backgroundLight1 dark:bg-backgroundDark3 py-[11px] px-5 rounded-lg placeholder:text-textLight3 outline-none text-lg lg:text-[26px] lg:font-bold w-full font-semibold' value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} />
                 <div className='flex mt-5 gap-[14px] lg:gap-5'>
@@ -130,6 +134,7 @@ const CreatePost = (props: Props) => {
                         <button className='text-textLight3 text-sm lg:text-base'>Cancel</button>
                     </div>
                 </div>
+                {showChatBox && <ChatBox setShowChatBox={setShowChatBox} />}
             </div>
             <MobileNav />
         </div>

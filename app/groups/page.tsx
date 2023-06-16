@@ -1,16 +1,34 @@
 'use client'
 
 import Image from "next/image"
-import { GroupTypeCard, MeetupCard, MobileNav, Navbar, PodcastCard, Title } from "../../components"
+import { useState, useEffect } from "react"
+import { ChatBox, GroupTypeCard, MeetupCard, MobileNav, Navbar, PodcastCard, Title } from "../../components"
 import { groups, groupTypes } from "../../constants/groups"
-import { meetups, podcasts } from "../../constants/constants"
+import { meetups } from "../../constants/constants"
 
-type Props = {}
+const Groups = () => {
+    const [showChatBox, setShowChatBox] = useState(false)
+    const [podcasts, setPodcasts] = useState<Podcast[]>()
 
-const Groups = (props: Props) => {
+    console.log(podcasts, 'podcasts')
+
+    const getPodcasts = async () => {
+        try {
+            const res = await fetch('/api/podcasts')
+            const podcasts = await res.json()
+            setPodcasts(podcasts)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    useEffect(() => {
+        getPodcasts()
+    }, [])
+
     return (
         <div className="bg-backgroundLight1 dark:bg-backgroundDark1 h-auto">
-            <Navbar />
+            <Navbar setShowChatBox={setShowChatBox} />
             <div className='flex flex-col lg:flex-row lg:items-start p-5 lg:py-[30px] lg:px-10 gap-5 lg:justify-center'>
                 <div className="bg-white dark:bg-backgroundDark2 w-full p-[10px] rounded-2xl lg:max-w-[214px] flex flex-col lg:gap-5">
                     {groupTypes.map((groupType, index) => (
@@ -63,12 +81,13 @@ const Groups = (props: Props) => {
                     <div className="bg-white dark:bg-backgroundDark2 rounded-[10px] p-5 mb-24">
                         <Title title="Podcasts" />
                         <div className="flex flex-col gap-5 mt-5">
-                            {podcasts.map((podcast, index) => (
+                            {podcasts?.map((podcast, index) => (
                                 <PodcastCard key={index} podcast={podcast} />
                             ))}
                         </div>
                     </div>
                 </div>
+                {showChatBox && <ChatBox setShowChatBox={setShowChatBox} />}
             </div>
             <MobileNav />
         </div>

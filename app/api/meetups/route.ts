@@ -29,7 +29,7 @@ export const POST = async (req: any) => {
 export const GET = async (req: any) => {
     try {
         await connectToDB();
-        const meetups = await Meetup.find({});
+        const meetups = await Meetup.find({}).sort({date: -1});
         return new Response(JSON.stringify(meetups), {
             status: 200,
         })

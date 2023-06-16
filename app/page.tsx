@@ -11,14 +11,15 @@ import { MeetupCard, MobileNav, Navbar, PostCard, SortCard, Title, PodcastCard, 
 import { RootState } from "@redux/store";
 import {
   meetups,
-  podcasts,
   popularTags,
   sortTypes,
 } from "../constants/constants";
+import Link from "next/link";
 
 const Home = () => {
   const [showChatBox, setShowChatBox] = useState(false);
   const [posts, setPosts] = useState([])
+  const [podcasts, setPodcasts] = useState([])
   const [currentSortType, setCurrentSortType] = useState('Newest posts')
   const [displayCount, setDisplayCount] = useState(4);
   const [userInfo, setUserInfo] = useState<User>();
@@ -55,9 +56,24 @@ const Home = () => {
     }
   }
 
+  const getPodcasts = async () => {
+    try {
+      const response = await fetch("/api/podcasts");
+      const data = await response.json();
+      setPodcasts(data);
+    } catch (error) {
+      console.log(error, "error");
+    }
+  }
+
   const seeMorePosts = () => {
     setDisplayCount(displayCount + 4);
   };
+
+  useEffect(() => {
+    getPodcasts();
+  }, [])
+
 
   useEffect(() => {
     getPosts();
@@ -67,6 +83,7 @@ const Home = () => {
     getCreatorInfo();
   }, [session])
 
+  if (!posts.length) return null
 
   return (
     <div>
@@ -90,7 +107,9 @@ const Home = () => {
           </div>
           <div className="hidden lg:flex md:flex-col bg-white dark:bg-backgroundDark2 p-[10px] md:p-5 rounded-[10px] justify-between">
             <div className="mb-5">
-              <Title title="Popular Groups" />
+              <Link href='/groups'>
+                <Title title="Popular Groups" />
+              </Link>
             </div>
             <div className="flex flex-col gap-[12px]">
               {popularTags.slice(0, 4).map((tag, index) => (
@@ -147,7 +166,9 @@ const Home = () => {
         </div>
         <div className="flex flex-col">
           <div className="bg-white dark:bg-backgroundDark2 rounded-[10px] p-5 mt-[22px] lg:mt-0">
-            <Title title="Meetups" />
+            <Link href='/meetups'>
+              <Title title="Meetups" />
+            </Link>
             <div className="flex flex-col gap-5 mt-5">
               {meetups.map((meetup, index) => (
                 <MeetupCard key={index} meetup={meetup} />
@@ -155,7 +176,9 @@ const Home = () => {
             </div>
           </div>
           <div className="bg-white dark:bg-backgroundDark2 rounded-[10px] p-5 mt-5 mb-24">
-            <Title title="Podcasts" />
+            <Link href='/podcasts'>
+              <Title title="Podcasts" />
+            </Link>
             <div className="flex flex-col gap-5 mt-5">
               {podcasts.map((podcast, index) => (
                 <PodcastCard key={index} podcast={podcast} />
@@ -163,7 +186,7 @@ const Home = () => {
             </div>
           </div>
         </div>
-        {showChatBox && <ChatBox />}
+        {showChatBox && <ChatBox setShowChatBox={setShowChatBox} />}
       </div>
       <MobileNav />
     </div>
