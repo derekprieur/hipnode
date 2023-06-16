@@ -1,19 +1,32 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import Image from 'next/image'
 import { useTheme } from 'next-themes'
 
-import { GroupAboutCard, GroupAdminCard, MobileNav, Navbar, PostCard, TagCard, Title } from '../../components'
-import { popularTags, posts } from '../../constants/constants'
+import { ChatBox, GroupAboutCard, GroupAdminCard, MobileNav, Navbar, PostCard, TagCard, Title } from '../../components'
+import { popularTags } from '../../constants/constants'
 
 type Props = {}
 
 const Group = (props: Props) => {
     const { theme } = useTheme()
+    const [showChatBox, setShowChatBox] = useState(false)
+    const [posts, setPosts] = useState<Post[]>([])
+
+    const getPosts = async () => {
+        try {
+            const response = await fetch("/api/posts");
+            const data = await response.json();
+            setPosts(data);
+        } catch (error) {
+            // handle error
+        }
+    }
+
     return (
         <div className="bg-backgroundLight1 dark:bg-backgroundDark1 h-auto">
-            <Navbar />
+            <Navbar setShowChatBox={setShowChatBox} />
             <div className='flex flex-col lg:flex-row lg:items-start p-5 lg:py-[30px] lg:px-10 gap-5 lg:justify-center pb-20'>
                 <div className='hidden lg:flex lg:flex-col gap-5'>
                     <GroupAboutCard />
@@ -24,7 +37,7 @@ const Group = (props: Props) => {
                         </div>
                         <div className="flex flex-col gap-[12px]">
                             {popularTags.map((tag, index) => (
-                                <TagCard key={index} tag={tag} />
+                                <TagCard key={index} tag={tag} posts={posts} />
                             ))}
                         </div>
                     </div>
@@ -114,6 +127,7 @@ const Group = (props: Props) => {
                         <GroupAdminCard />
                     </div>
                 </div>
+                {showChatBox && <ChatBox setShowChatBox={setShowChatBox} />}
             </div>
             <MobileNav />
         </div>
