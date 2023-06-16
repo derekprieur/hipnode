@@ -8,7 +8,6 @@ import { setSearchValue } from '@redux/searchValueSlice'
 const SearchInput = () => {
     const searchValue = useSelector((state: RootState) => state.searchValue.value);
     const dispatch = useDispatch();
-    console.log(searchValue, 'searchValue');
     return (
         <div className='justify-between bg-backgroundLight3 dark:bg-backgroundDark3 rounded-[8px] py-[10px] px-5 w-full hidden xl:flex'>
             <input type='text' placeholder='Type here to search...' className='bg-backgroundLight3 dark:bg-backgroundDark3 rounded-[8px] outline-none' value={searchValue} onChange={e => dispatch(setSearchValue(e.target.value))} />

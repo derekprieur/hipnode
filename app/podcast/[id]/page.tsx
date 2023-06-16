@@ -17,7 +17,7 @@ const Podcast = ({ params }: { params: { id: string } }) => {
             setPodcast(data)
         }
         catch (err) {
-            console.log(err)
+            // handle error
         }
     }
 

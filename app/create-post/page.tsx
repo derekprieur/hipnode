@@ -75,7 +75,7 @@ const CreatePost = (props: Props) => {
                 router.push('/');
             }
         } catch (error) {
-            console.log(error, 'error');
+            // handle error
         }
     };
 

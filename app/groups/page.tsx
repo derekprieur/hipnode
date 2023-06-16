@@ -10,15 +10,13 @@ const Groups = () => {
     const [showChatBox, setShowChatBox] = useState(false)
     const [podcasts, setPodcasts] = useState<Podcast[]>()
 
-    console.log(podcasts, 'podcasts')
-
     const getPodcasts = async () => {
         try {
             const res = await fetch('/api/podcasts')
             const podcasts = await res.json()
             setPodcasts(podcasts)
         } catch (error) {
-            console.log(error)
+            // handle error
         }
     }
 

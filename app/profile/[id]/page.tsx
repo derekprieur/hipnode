@@ -6,19 +6,19 @@ import { useTheme } from 'next-themes'
 import { ChatBox, MeetupCard, Navbar, PodcastCard, PostCard, Title } from '../../../components'
 import Image from 'next/image'
 import { categories } from '../../../constants/profile'
-import { meetups, podcasts } from '../../../constants/constants'
+import { meetups } from '../../../constants/constants'
 import { useSession } from 'next-auth/react'
-import Link from 'next/link'
 
 const Profile = ({ params }: { params: { id: string } }) => {
+    const { theme } = useTheme()
     const [isFollowed, setIsFollowed] = useState(false)
     const [followedUsers, setFollowedUsers] = useState<User[]>([])
-    const { theme } = useTheme()
     const [posts, setPosts] = useState<Post[]>([])
     const [loggedInUserInfo, setLoggedInUserInfo] = useState<User>()
-    const [userInfo, setUserInfo] = useState<User>({ name: '', username: '', email: '', image: '', description: '', following: [], favorites: [], followers: [], _id: '' })
+    const [userInfo, setUserInfo] = useState<User>({ name: '', username: '', email: '', image: '', description: '', following: [], favorites: [], followers: [], _id: '', createdAt: '' })
     const [currentSelectedType, setCurrentSelectedType] = useState('Posts')
     const [showChatBox, setShowChatBox] = useState(false);
+    const [podcasts, setPodcasts] = useState<Podcast[]>([])
     const { data: session } = useSession()
 
     const getCreatorInfo = async () => {
@@ -27,7 +27,7 @@ const Profile = ({ params }: { params: { id: string } }) => {
             const data = await response.json()
             setUserInfo(data)
         } catch (error) {
-            console.log(error, 'error');
+            // handle error
         }
     }
 
@@ -37,7 +37,7 @@ const Profile = ({ params }: { params: { id: string } }) => {
             const data = await response.json();
             setPosts(data);
         } catch (error) {
-            console.log(error, "error");
+            // handle error
         }
     }
 
@@ -51,7 +51,7 @@ const Profile = ({ params }: { params: { id: string } }) => {
             const users: User[] = await Promise.all(userPromises);
             setFollowedUsers(users);
         } catch (error) {
-            console.log(error);
+            // handle error
         }
     };
 
@@ -68,13 +68,39 @@ const Profile = ({ params }: { params: { id: string } }) => {
                 setIsFollowed(false)
             }
         } catch (error) {
-            console.log(error);
+            // handle error
         }
+    }
+
+    const getPodcasts = async () => {
+        try {
+            const response = await fetch("/api/podcasts");
+            const data = await response.json();
+            setPodcasts(data);
+        } catch (error) {
+            // handle error
+        }
+    }
+
+    const getTimeSinceUserJoined = () => {
+        const date1 = new Date(userInfo.createdAt)
+        const date2 = new Date()
+        const diffTime = Math.abs(date2.getTime() - date1.getTime());
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        // return diffDay + ' days ago'
+        if (diffDays > 365) {
+            return Math.floor(diffDays / 365) + ' years ago'
+        }
+        if (diffDays > 30) {
+            return Math.floor(diffDays / 30) + ' months ago'
+        }
+        return diffDays + ' days ago'
     }
 
     useEffect(() => {
         getPosts()
         getCreatorInfo()
+        getPodcasts()
     }, [])
 
     useEffect(() => {
@@ -101,12 +127,9 @@ const Profile = ({ params }: { params: { id: string } }) => {
 
 
         } catch (error) {
-            console.log('Failed to follow user:', error);
+            // handle error
         }
     }
-
-    console.log(userInfo, 'user info');
-    console.log(loggedInUserInfo, 'logged in user info');
 
     return (
         <div className="bg-backgroundLight1 dark:bg-backgroundDark1 h-auto">
@@ -148,7 +171,7 @@ const Profile = ({ params }: { params: { id: string } }) => {
                             </div>
                         </div>
                         <div className='bg-backgroundLight3 h-[1px] w-[170px] mt-5' />
-                        <p className='mt-5 font-semibold text-textLight3 dark:text-textDark2'>joined 2 years ago</p>
+                        <p className='mt-5 font-semibold text-textLight3 dark:text-textDark2'>Joined {getTimeSinceUserJoined()}</p>
                     </div>
                 </div>
                 <Image src='/assets/profile-interview.png' alt='interview' width={325} height={168} className='rounded-2xl mx-auto flex lg:hidden' />

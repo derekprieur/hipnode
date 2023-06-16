@@ -19,14 +19,11 @@ const Posts = ({ params }: { params: { id: string } }) => {
     const [showChatBox, setShowChatBox] = useState(false)
     const { data: session } = useSession()
 
-    console.log(postInfo, 'postInfo');
-
     const handleReportToggle = () => {
         setReportModalShowing(prev => !prev)
     }
 
     const getPostInfo = async () => {
-        console.log(params.id, 'params.id');
         try {
             const response = await fetch(`/api/posts/${params.id}`, {
                 headers: {
@@ -35,15 +32,13 @@ const Posts = ({ params }: { params: { id: string } }) => {
             });
 
             const data = await response.json();
-            console.log(data, 'data1')
             setPostInfo(data);
         } catch (error) {
-            console.log(error, 'error7');
+            // handle error
         }
     }
 
     const getCreatorInfo = async () => {
-        console.log(postInfo?.user, 'postInfo?.user 123');
         if (!postInfo?.user) return;
         try {
             const response = await fetch(`/api/users/${postInfo?.user}`, {
@@ -53,15 +48,13 @@ const Posts = ({ params }: { params: { id: string } }) => {
             });
 
             const data = await response.json();
-            console.log(data, 'data890');
             setCreatorInfo(data);
         } catch (error) {
-            console.log(error, 'error1');
+            // handle error
         }
     }
 
     const checkIfFollowing = async () => {
-        console.log(session, 'session');
         if (!session?.user || !creatorInfo) return;
         try {
             // @ts-ignore
@@ -72,21 +65,18 @@ const Posts = ({ params }: { params: { id: string } }) => {
             });
 
             const data = await response.json();
-            console.log(data, 'data2');
             setSignedInUserInfo(data);
 
-            console.log(creatorInfo, 'creatorInfo')
 
             if (data.following.includes(creatorInfo?._id)) {
                 setIsFollowing(true);
-                console.log('true');
             }
             else {
                 setIsFollowing(false);
             }
 
         } catch (error) {
-            console.log(error, 'error2');
+            // handle error
         }
     }
 
@@ -104,16 +94,14 @@ const Posts = ({ params }: { params: { id: string } }) => {
             });
 
             const data = await response.json();
-            console.log(data, 'data');
             setIsFollowing(prev => !prev);
         } catch (error) {
-            console.log(error);
+            // handle error
         }
     }
 
     const handleSubmitComment = async (e: React.SyntheticEvent) => {
         e.preventDefault();
-        console.log(comment, 'comment');
 
         // @ts-ignore
         if (session === null || session.user === undefined || !session?.user.id) return;
@@ -133,7 +121,6 @@ const Posts = ({ params }: { params: { id: string } }) => {
             }
 
             const data = await response.json();
-            console.log('Comment submitted successfully:', data);
 
             setComment('');
             getPostInfo();
@@ -157,7 +144,6 @@ const Posts = ({ params }: { params: { id: string } }) => {
             }
 
             const data = await response.json();
-            console.log('View count incremented successfully:', data);
 
         } catch (error) {
             console.error('Error:', error);

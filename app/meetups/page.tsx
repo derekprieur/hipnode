@@ -6,12 +6,12 @@ import { useTheme } from 'next-themes'
 
 import { ChatBox, MobileNav, Navbar, PodcastCard, Title } from '../../components'
 import { categories } from '../../constants/meetups'
-import { podcasts } from '../../constants/constants'
 import Link from 'next/link'
 
 const Meetups = () => {
     const { theme } = useTheme()
     const [meetups, setMeetups] = useState<Meetup[]>([])
+    const [podcasts, setPodcasts] = useState<Podcast[]>([])
     const [showChatBox, setShowChatBox] = useState(false)
     const [enabledCategories, setEnabledCategories] = useState(categories)
 
@@ -19,10 +19,19 @@ const Meetups = () => {
         try {
             const response = await fetch('/api/meetups')
             const data = await response.json()
-            console.log(data, 'data')
             setMeetups(data)
         } catch (error) {
-            console.log(error)
+            // handle error
+        }
+    }
+
+    const getPodcasts = async () => {
+        try {
+            const response = await fetch('/api/podcasts')
+            const data = await response.json()
+            setPodcasts(data)
+        } catch (error) {
+            // handle error
         }
     }
 
@@ -38,6 +47,7 @@ const Meetups = () => {
 
     useEffect(() => {
         getMeetups()
+        getPodcasts()
     }, [])
 
     if (!meetups.length) return null

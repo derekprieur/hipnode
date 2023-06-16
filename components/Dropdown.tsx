@@ -16,7 +16,7 @@ type Props = {
 
 const Dropdown = ({ text, toggleDropdown, dropDownOpen, selectedType, setSelectedType }: Props) => {
     const { theme } = useTheme()
-    console.log(text, 'text')
+
     return (
         <div className='flex bg-backgroundLight1 dark:bg-backgroundDark3 py-[5px] px-[10px] rounded items-center gap-[10px] cursor-pointer relative' onClick={toggleDropdown}>
             <p className='text-[9px] lg:text-[10px] capitalize'>{text}</p>

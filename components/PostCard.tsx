@@ -14,7 +14,7 @@ type Props = {
 const PostCard = ({ post }: Props) => {
     const [favorited, setFavorited] = useState(false)
     const [userInfo, setUserInfo] = useState<User>({
-        email: '', name: '', description: '', following: [], image: '', _id: '', favorites: [], username: '', followers: []
+        email: '', name: '', description: '', following: [], image: '', _id: '', favorites: [], username: '', followers: [], createdAt: ''
     })
     const [creatorInfo, setCreatorInfo] = useState({
         username: '',
@@ -34,6 +34,10 @@ const PostCard = ({ post }: Props) => {
     }
 
     const updateFavoritePosts = async () => {
+        if (!session) {
+            router.push('/signin')
+            return
+        }
         try {
             // @ts-ignore
             const response = await fetch(`/api/users/${session?.user?.id}/favorites`, {
@@ -58,39 +62,61 @@ const PostCard = ({ post }: Props) => {
 
             setFavorited(prev => !prev);
         } catch (error) {
-            console.log(error);
+            // handle error
         }
     }
 
     const getLoggedInUserInfo = async () => {
+        if (!session) return
         try {
             // @ts-ignore
             const response = await fetch(`/api/users/${session?.user?.id}`)
             const data = await response.json()
             setUserInfo(data)
         } catch (error) {
-            console.log(error, 'error');
+            // handle error
         }
     }
 
     const getCreatorInfo = async () => {
+        if (!post.user) return
         try {
             const response = await fetch(`/api/users/${post.user}`)
             const data = await response.json()
             setCreatorInfo(data)
         } catch (error) {
-            console.log(error, 'error');
+            // handle error
         }
     }
 
+    const getTimeSincePosted = (post: Post) => {
+        const date1 = new Date(post.createdAt)
+        const date2 = new Date()
+        const diffTime = Math.abs(date2.getTime() - date1.getTime());
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        // return diffDay + ' days ago'
+        if (diffDays > 365) {
+            return Math.floor(diffDays / 365) + ' years ago'
+        }
+        if (diffDays > 30) {
+            return Math.floor(diffDays / 30) + ' months ago'
+        }
+        return diffDays + ' days ago'
+    }
+
     useEffect(() => {
-        getCreatorInfo()
         getLoggedInUserInfo()
     }, [])
 
     useEffect(() => {
+        getCreatorInfo()
+    }, [post])
+
+    useEffect(() => {
         checkIfFavorited()
     }, [userInfo])
+
+    if (!creatorInfo) return null
 
     return (
         <div className='p-[14px] lg:p-5 bg-white dark:bg-backgroundDark2 rounded-[10px] flex items-start'>
@@ -123,7 +149,7 @@ const PostCard = ({ post }: Props) => {
                                 <p className='font-semibold text-sm cursor-pointer' onClick={() => router.push(`/profile/${creatorInfo._id}`)}>{creatorInfo?.username}</p>
                                 <div className='w-[5px] h-[5px] rounded-full bg-backgroundLight4' />
                             </div>
-                            <p className='text-[10px] text-textLight3'>3 weeks ago</p>
+                            <p className='text-[10px] text-textLight3'>{getTimeSincePosted(post)}</p>
                         </div>
                     </div>
                     <PostMetrics viewCount={post.viewCount} likeCount={post.likeCount} commentCount={commentCount} />

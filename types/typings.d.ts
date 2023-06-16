@@ -1,14 +1,15 @@
 interface Post {
     title: string
-        tags: string[]
-        image: string
-        user: string
-        viewCount: number
-        likeCount: number
-        commentCount: number
-        _id: string
-        comments: Comment[]
-        likes: string[]
+    tags: string[]
+    image: string
+    user: string
+    viewCount: number
+    likeCount: number
+    commentCount: number
+    _id: string
+    comments: Comment[]
+    likes: string[]
+    createdAt: string
 }
 
 interface User {
@@ -21,6 +22,7 @@ interface User {
     favorites: string[]
     followers: string[]
     _id: string
+    createdAt: string
 }
 
 interface Session {

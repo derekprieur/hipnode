@@ -19,6 +19,7 @@ import Link from "next/link";
 const Home = () => {
   const [showChatBox, setShowChatBox] = useState(false);
   const [posts, setPosts] = useState([])
+  const [filteredPosts, setFilteredPosts] = useState([])
   const [podcasts, setPodcasts] = useState([])
   const [currentSortType, setCurrentSortType] = useState('Newest posts')
   const [displayCount, setDisplayCount] = useState(4);
@@ -27,6 +28,9 @@ const Home = () => {
   const dispatch = useDispatch();
   const { data: session } = useSession();
   const title = useSelector((state: RootState) => state.post.title);
+  const selectedTag = useSelector((state: RootState) => state.selectedTag.value);
+
+  console.log(selectedTag, 'selectedTag')
 
   const getCreatorInfo = async () => {
     try {
@@ -35,24 +39,34 @@ const Home = () => {
       const data = await response.json()
       setUserInfo(data)
     } catch (error) {
-      console.log(error, 'error');
+      // handle error
     }
   }
 
   const getPosts = async () => {
+    console.log('test')
     try {
       const response = await fetch("/api/posts");
       let data = await response.json();
       if (currentSortType === 'Newest posts') {
         data = data.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-      } else if (currentSortType === 'Popular today') {
+      }
+      if (currentSortType === 'Popular today') {
         data = data.sort((a: any, b: any) => b.likeCount - a.likeCount);
-      } else if (currentSortType === 'Following' && userInfo?.following) {
+      }
+      if (currentSortType === 'Following') {
+        if (!userInfo) {
+          router.push('/signin')
+          return
+        }
+        if (!userInfo.following) return
+        console.log(userInfo.following, 'userInfo.following')
         data = data.filter((post: any) => userInfo.following.includes(post.user));
       }
       setPosts(data);
+      setFilteredPosts(data);
     } catch (error) {
-      console.log(error, "error");
+      // handle error
     }
   }
 
@@ -62,7 +76,7 @@ const Home = () => {
       const data = await response.json();
       setPodcasts(data);
     } catch (error) {
-      console.log(error, "error");
+      // handle error
     }
   }
 
@@ -70,10 +84,18 @@ const Home = () => {
     setDisplayCount(displayCount + 4);
   };
 
+  const filterPostsByTag = async () => {
+    if (selectedTag) {
+      const filteredPosts = posts.filter((post: any) => post.tags.includes(selectedTag));
+      setFilteredPosts(filteredPosts);
+    } else {
+      setFilteredPosts(posts)
+    }
+  }
+
   useEffect(() => {
     getPodcasts();
   }, [])
-
 
   useEffect(() => {
     getPosts();
@@ -83,7 +105,11 @@ const Home = () => {
     getCreatorInfo();
   }, [session])
 
-  if (!posts.length) return null
+  useEffect(() => {
+    filterPostsByTag();
+  }, [selectedTag])
+
+  if (!filteredPosts.length && !currentSortType) return null
 
   return (
     <div>
@@ -101,7 +127,7 @@ const Home = () => {
             </div>
             <div className="flex flex-col gap-[12px]">
               {popularTags.map((tag, index) => (
-                <TagCard key={index} tag={tag} />
+                <TagCard key={index} tag={tag} posts={posts} />
               ))}
             </div>
           </div>
@@ -140,18 +166,18 @@ const Home = () => {
           </div>
           <div className="flex flex-col mt-5 gap-5">
             {currentSortType !== 'Following' ? (
-              posts.slice(0, displayCount).map((post, index) => (
+              filteredPosts.slice(0, displayCount).map((post, index) => (
                 <PostCard key={index} post={post} />
               ))
             ) : userInfo?.following?.length === 0 ? (
               <p>You are not following any users</p>
             ) : (
-              posts.slice(0, displayCount).map((post, index) => (
+              filteredPosts.slice(0, displayCount).map((post, index) => (
                 <PostCard key={index} post={post} />
               ))
             )}
 
-            {displayCount < posts.length && !(currentSortType === 'Following' && userInfo?.following?.length === 0) &&
+            {displayCount < filteredPosts.length && !(currentSortType === 'Following' && userInfo?.following?.length === 0) &&
               <div className="flex mt-3 gap-[14px] items-center cursor-pointer" onClick={seeMorePosts}>
                 <p className="text-[10px] text-textLight3">See more</p>
                 <Image

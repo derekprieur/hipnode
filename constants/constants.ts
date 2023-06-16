@@ -229,7 +229,7 @@ export const navOptions = [
 
 export const popularTags = [
   {
-    type: "Javascript",
+    type: "javascript",
     image: "/assets/tag1.png",
     count: 82645,
     group: '/assets/group1.png'

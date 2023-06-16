@@ -17,8 +17,6 @@ type Props = {
 const PostCommentCard = ({ comment, isReply, isReplyingTo, setIsReplyingTo, setCommentBeingRepliedToId }: Props) => {
     const [commenterInfo, setCommenterInfo] = useState<User>()
     const formattedDate = new Date(comment.date).toLocaleString()
-    console.log(isReplyingTo, 'isReplyingTo')
-    console.log(isReply, 'isReply')
 
     const getCommenterInfo = async () => {
         try {
@@ -30,7 +28,7 @@ const PostCommentCard = ({ comment, isReply, isReplyingTo, setIsReplyingTo, setC
             const data = await response.json();
             setCommenterInfo(data);
         } catch (error) {
-            console.log(error);
+            // handle error
         }
     }
 

@@ -37,13 +37,15 @@ const Signin = () => {
             <div className="bg-backgroundLight1 dark:bg-backgroundDark1 h-auto lg:h-screen pt-8 px-6 lg:pt-11 lg:px-10 flex flex-col lg:flex-row lg:w-1/2">
                 <div className="flex-1">
                     <div className="flex justify-between">
-                        <Image
-                            src={logoSrc}
-                            width={146}
-                            height={38}
-                            alt="logo"
-                            className="mb-[60px]"
-                        />
+                        <Link href='/'>
+                            <Image
+                                src={logoSrc}
+                                width={146}
+                                height={38}
+                                alt="logo"
+                                className="mb-[60px]"
+                            />
+                        </Link>
                         <DarkModeToggle />
                     </div>
                     <div className="flex flex-col xl:pl-[104px] xl:pr-[86px] md:px-16 lg:px-0 xl:pt-16">
