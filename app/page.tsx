@@ -30,8 +30,6 @@ const Home = () => {
   const title = useSelector((state: RootState) => state.post.title);
   const selectedTag = useSelector((state: RootState) => state.selectedTag.value);
 
-  console.log(selectedTag, 'selectedTag')
-
   const getCreatorInfo = async () => {
     try {
       //@ts-ignore
@@ -44,7 +42,6 @@ const Home = () => {
   }
 
   const getPosts = async () => {
-    console.log('test')
     try {
       const response = await fetch("/api/posts");
       let data = await response.json();
@@ -60,7 +57,6 @@ const Home = () => {
           return
         }
         if (!userInfo.following) return
-        console.log(userInfo.following, 'userInfo.following')
         data = data.filter((post: any) => userInfo.following.includes(post.user));
       }
       setPosts(data);

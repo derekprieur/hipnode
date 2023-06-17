@@ -147,7 +147,7 @@ const PostCard = ({ post }: Props) => {
                         <div className='flex flex-col'>
                             <div className='flex items-center gap-1'>
                                 <p className='font-semibold text-sm cursor-pointer' onClick={() => router.push(`/profile/${creatorInfo._id}`)}>{creatorInfo?.username}</p>
-                                <div className='w-[5px] h-[5px] rounded-full bg-backgroundLight4' />
+                                <div className={`w-[5px] h-[5px] rounded-full ${creatorInfo._id === userInfo._id ? 'bg-textAlt4' : 'bg-backgroundLight4'}`} />
                             </div>
                             <p className='text-[10px] text-textLight3'>{getTimeSincePosted(post)}</p>
                         </div>

@@ -45,15 +45,23 @@ const Meetups = () => {
         }
     }
 
+    const filterMeetups = () => {
+        return meetups.filter((meetup) => enabledCategories.some((enabledCategory) => meetup.tags.includes(enabledCategory)))
+    }
+
     useEffect(() => {
         getMeetups()
         getPodcasts()
     }, [])
 
+    useEffect(() => {
+        filterMeetups()
+    }, [enabledCategories])
+
     if (!meetups.length) return null
 
     return (
-        <div className='bg-backgroundLight1 dark:bg-backgroundDark1 h-auto'>
+        <div className='bg-backgroundLight1 dark:bg-backgroundDark1 h-auto lg:h-max'>
             <Navbar setShowChatBox={setShowChatBox} />
             <div className='flex flex-col lg:flex-row items-center lg:items-start p-5 lg:py-[30px] lg:px-10 gap-5 lg:justify-center'>
                 <Image src='/assets/meetup-banner.png' alt='banner' width={335} height={168} className='shrink-0 object-contain flex lg:hidden' />
