@@ -85,9 +85,9 @@ export const sortTypes = [
     subtext: 'Find the latest update'
   },
   {
-    text: "Popular today",
+    text: "Popular lately",
     icon: "/assets/popular-sort.png",
-    subtext: 'Shots featured today by curators'
+    subtext: 'Shots featured by curators'
   },
   {
     text: "Following",

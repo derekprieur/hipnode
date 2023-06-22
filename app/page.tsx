@@ -15,6 +15,7 @@ import {
   sortTypes,
 } from "../constants/constants";
 import Link from "next/link";
+import { seeMorePosts } from "@utils/seeMorePosts";
 
 const Home = () => {
   const [showChatBox, setShowChatBox] = useState(false);
@@ -48,7 +49,7 @@ const Home = () => {
       if (currentSortType === 'Newest posts') {
         data = data.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
       }
-      if (currentSortType === 'Popular today') {
+      if (currentSortType === 'Popular lately') {
         data = data.sort((a: any, b: any) => b.likeCount - a.likeCount);
       }
       if (currentSortType === 'Following') {
@@ -75,10 +76,6 @@ const Home = () => {
       // handle error
     }
   }
-
-  const seeMorePosts = () => {
-    setDisplayCount(displayCount + 4);
-  };
 
   const filterPostsByTag = async () => {
     if (selectedTag) {
@@ -174,7 +171,7 @@ const Home = () => {
             )}
 
             {displayCount < filteredPosts.length && !(currentSortType === 'Following' && userInfo?.following?.length === 0) &&
-              <div className="flex mt-3 gap-[14px] items-center cursor-pointer" onClick={seeMorePosts}>
+              <div className="flex mt-3 gap-[14px] items-center cursor-pointer" onClick={() => seeMorePosts(setDisplayCount, displayCount)}>
                 <p className="text-[10px] text-textLight3">See more</p>
                 <Image
                   src="/assets/arrow.png"

@@ -5,9 +5,11 @@ import React, { useEffect, useState } from 'react'
 import { useTheme } from 'next-themes'
 import { signOut, useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
+import { useSelector } from 'react-redux'
 
 import { MessageCard, NotificationCard, NotificationType, SearchInput, SettingsCard, Title } from './../components'
-import { messages, navOptions, notificationTypes, notifications } from '../constants/constants'
+import { navOptions, notificationTypes, notifications } from '../constants/constants'
+import { RootState } from '@redux/store'
 
 type Props = {
     setShowChatBox: React.Dispatch<React.SetStateAction<boolean>>
@@ -22,8 +24,13 @@ const Navbar = ({ setShowChatBox }: Props) => {
     const [showingMessages, setShowingMessages] = useState(false)
     const [showingNotifications, setShowingNotifications] = useState(false)
     const [showingSettings, setShowingSettings] = useState(false)
+    const [messages, setMessages] = useState<Message[]>([])
+    const newMessage = useSelector((state: RootState) => state.newMessage.message)
+
+    console.log(messages, 'messages')
 
     const toggleMessages = () => {
+        if (!showingMessages) getAllMessages()
         setShowingMessages(!showingMessages)
         setShowingNotifications(false)
         setShowingSettings(false)
@@ -46,6 +53,12 @@ const Navbar = ({ setShowChatBox }: Props) => {
         router.push('/')
     }
 
+    const getAllMessages = async () => {
+        const response = await fetch('http://localhost:3000/api/messages')
+        const data = await response.json()
+        setMessages(data)
+    }
+
     useEffect(() => {
         setLogoSrc(
             theme === "dark" ? "/assets/small-logo-dark.png" : "/assets/small-logo.png"
@@ -54,6 +67,7 @@ const Navbar = ({ setShowChatBox }: Props) => {
             theme === "dark" ? "/assets/logo.png" : "/assets/logo-light.png"
         );
     }, [theme]);
+
 
     if (!logoSrc || !largeLogoSrc) {
         return <div></div>;
@@ -81,13 +95,13 @@ const Navbar = ({ setShowChatBox }: Props) => {
                 <div className='flex items-center lg:p-[10px] lg:bg-backgroundLight3 lg:dark:bg-backgroundDark3 lg:rounded-[7px] relative'>
                     <Image src={'/assets/message.png'} alt={'message'} width={20} height={20} className='object-contain flex dark:hidden cursor-pointer' onClick={toggleMessages} />
                     <Image src={'/assets/message-dark.png'} alt={'message'} width={20} height={20} className='object-contain hidden dark:flex cursor-pointer' onClick={toggleMessages} />
-                    {showingMessages &&
+                    {(showingMessages && messages.length > 0) &&
                         <div className="bg-white dark:bg-backgroundDark3 absolute -left-[260px] lg:-left-[148px] w-[336px] top-12 rounded-lg p-5 z-50">
                             <div className="mb-5">
                                 <Title title="Messages" />
                             </div>
                             <div className="flex flex-col gap-5">
-                                {messages.map((message, index) => (
+                                {messages?.map((message: any, index) => (
                                     <MessageCard key={index} message={message} setShowChatBox={setShowChatBox} />
                                 ))}
                             </div>

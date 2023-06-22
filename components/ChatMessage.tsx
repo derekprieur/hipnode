@@ -4,13 +4,14 @@ import React from 'react'
 type Props = {
     text: string
     isSender: boolean
+    image: string
 }
 
-const ChatMessage = ({ text, isSender }: Props) => {
+const ChatMessage = ({ text, isSender, image }: Props) => {
     return (
         <div className={`${isSender ? 'flex-row-reverse' : 'flex'} flex gap-[10px] items-start`}>
-            <Image src='/assets/user3.png' alt='user' width={30} height={30} className='object-contain flex lg:hidden' />
-            <Image src='/assets/user3.png' alt='user' width={40} height={40} className='object-contain hidden lg:flex' />
+            <Image src={image} alt='user' width={30} height={30} className='object-contain flex lg:hidden rounded-full' />
+            <Image src={image} alt='user' width={40} height={40} className='object-contain hidden lg:flex rounded-full' />
             <div className={`${isSender ? 'bg-backgroundAlt2 text-white' : 'bg-backgroundAlt3 text-textAlt1'} p-[10px] lg:p-[14px] rounded-lg rounded-tl-sm font-semibold text-sm lg:text-base`}>
                 {text === 'voice' ?
                     <div className='flex gap-4 items-center'>

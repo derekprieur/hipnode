@@ -163,7 +163,7 @@ const Posts = ({ params }: { params: { id: string } }) => {
         checkIfFollowing();
     }, [session, creatorInfo])
 
-    if (!signedInUserInfo) return null;
+    if (!signedInUserInfo || !creatorInfo) return null;
 
     return (
         <div className='relative'>
@@ -172,7 +172,7 @@ const Posts = ({ params }: { params: { id: string } }) => {
                 <div className='flex flex-col lg:flex-row gap-5'>
                     <div className='flex flex-col gap-5 lg:flex-row-reverse lg:items-start'>
                         <div>
-                            <Image src='/assets/post-header.png' alt='post' width={335} height={117} className='object-contain w-full' />
+                            <Image src={'/assets/post-header.png'} alt='post' width={335} height={117} className='object-contain w-full' />
                             <div className='flex flex-col bg-white dark:bg-backgroundDark2 p-5 lg:p-[30px] pl-[61px] lg:pl-[77px] gap-[14px] rounded-b-2xl'>
                                 <h2 className='text-textLight1 dark:text-textDark1 font-semibold lg:text-[26px]'>{postInfo?.title}</h2>
                                 <div className='flex gap-6'>
@@ -184,8 +184,8 @@ const Posts = ({ params }: { params: { id: string } }) => {
                                     <p key={index} className='text-textLight3 text-xs lg:text-base'>{content}</p>
                                 ))}
                                 <div className='mt-[16px] flex gap-4'>
-                                    <Image src={`${signedInUserInfo?.image}`} alt='user' width={40} height={40} className='object-contain flex lg:hidden rounded-full' />
-                                    <Image src={`${signedInUserInfo?.image}`} alt='user' width={44} height={44} className='object-contain hidden lg:flex rounded-full' />
+                                    <Image src={`${signedInUserInfo?.image}`} alt='user' width={40} height={40} className='object-cover flex lg:hidden rounded-full' />
+                                    <Image src={`${signedInUserInfo?.image}`} alt='user' width={44} height={44} className='object-cover hidden lg:flex rounded-full' />
                                     <div className='flex border px-4 py-2 rounded-full flex-1 justify-between'>
                                         <form onSubmit={handleSubmitComment} className='w-full'>
                                             <input type="text" placeholder={`${isReplyingTo ? 'Replying to ' + isReplyingTo.username : 'Say something... '}`} className={`placeholder:text-textDark3 bg-transparent flex lg:hidden w-full outline-none ${isReplyingTo && 'placeholder:text-backgroundDark4'}`} value={comment} onChange={e => setComment(e.target.value)} />
@@ -237,14 +237,14 @@ const Posts = ({ params }: { params: { id: string } }) => {
                             <Image src={creatorInfo?.image || '/assets/user1.png'} alt='user' width={100} height={100} className='object-contain rounded-full' />
                             <h2 className='font-semibold text-[26px] mt-5 text-textLight1 dark:text-textDark1'>{creatorInfo?.username}</h2>
                             <p className='mt-[2px] text-textLight3 font-semibold'>Web Developer</p>
-                            <button className={`p-[10px] border ${isFollowing ? 'bg-white dark:bg-transparent border-backgroundLight4 text-textLight3' : 'bg-backgroundAlt5 border-backgroundAlt5 text-white'} w-full mt-5 font-semibold text-lg rounded-md`} onClick={() => setIsFollowing(prev => !prev)}>{isFollowing ? 'Following' : 'Follow'}</button>
+                            <button className={`p-[10px] border ${isFollowing ? 'bg-white dark:bg-transparent border-backgroundLight4 text-textLight3' : 'bg-backgroundAlt5 border-backgroundAlt5 text-white'} w-full mt-5 font-semibold text-lg rounded-md`} onClick={handleFollow}>{isFollowing ? 'Following' : 'Follow'}</button>
                             {isFollowing && (
-                                <div className={`p-[10px] border border-backgroundAlt5 bg-backgroundAlt5 text-white w-full mt-5 font-semibold text-lg rounded-md flex justify-center`}>
+                                <div className={`p-[10px] border border-backgroundAlt5 bg-backgroundAlt5 text-white w-full mt-5 font-semibold text-lg rounded-md flex justify-center cursor-pointer`} onClick={() => setShowChatBox(prev => !prev)}>
                                     <Image src='/assets/message-dark.png' alt='message' width={20} height={20} className='object-contain' />
                                     <p className='ml-5'>Message</p>
                                 </div>
                             )}
-                            <p className='mt-5 text-textLight3'>joined 6 months ago</p>
+                            <p className='mt-5 text-textLight3'>Joined 6 months ago</p>
                         </div>
                         <div className='flex flex-col bg-white dark:bg-backgroundDark2 p-5 rounded-2xl mb-10 gap-[15px]'>
                             <h3 className='text-textLight1 dark:text-textDark1 font-semibold text-lg'>More from {creatorInfo?.username}</h3>
@@ -263,7 +263,7 @@ const Posts = ({ params }: { params: { id: string } }) => {
                         </div>
                     </div>
                 </div>
-                {showChatBox && <ChatBox setShowChatBox={setShowChatBox} />}
+                {showChatBox && <ChatBox setShowChatBox={setShowChatBox} userToBeMessaged={creatorInfo} />}
             </div>
             <MobileNav />
             {reportModalShowing && (

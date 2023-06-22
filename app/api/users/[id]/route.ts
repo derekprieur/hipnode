@@ -3,6 +3,7 @@ import { connectToDB } from "@utils/database";
 
 export const GET = async (req: any, {params}: any) => {
     try {
+        console.log(params.id, 'params.id')
         await connectToDB();
         const user = await User.findById(params.id);
         return new Response(JSON.stringify(user), {
@@ -17,7 +18,7 @@ export const GET = async (req: any, {params}: any) => {
 
 export const PUT = async (req: any, {params}: any) => {
     const { followId } = await req.json();
-
+    console.log('test')
     try {
         await connectToDB();
         const user = await User.findById(params.id);
@@ -35,7 +36,6 @@ export const PUT = async (req: any, {params}: any) => {
         } else {
             const updatedUser = await User.findByIdAndUpdate(user._id, { $addToSet: { following: followId } }, { new: true });
             const updatedFollowUser = await User.findByIdAndUpdate(followId, { $addToSet: { followers: params.id } }, { new: true });
-        
         }
 
         return new Response(JSON.stringify("Operation performed successfully"), { status: 200 });

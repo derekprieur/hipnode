@@ -60,3 +60,17 @@ interface Podcast {
     location: string
     _id: string
 }
+
+interface Message {
+    user1: string
+    user2: string
+    messages: MessageContent[]
+    _id: string
+}
+
+interface MessageContent {
+    sender: string
+    message: string
+    date: string
+    _id: string
+}
