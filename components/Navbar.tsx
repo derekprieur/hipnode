@@ -27,8 +27,6 @@ const Navbar = ({ setShowChatBox }: Props) => {
     const [messages, setMessages] = useState<Message[]>([])
     const newMessage = useSelector((state: RootState) => state.newMessage.message)
 
-    console.log(messages, 'messages')
-
     const toggleMessages = () => {
         if (!showingMessages) getAllMessages()
         setShowingMessages(!showingMessages)

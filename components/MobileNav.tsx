@@ -4,9 +4,7 @@ import { useTheme } from 'next-themes'
 import { navOptions } from '../constants/constants'
 import Image from 'next/image'
 
-type Props = {}
-
-const MobileNav = (props: Props) => {
+const MobileNav = () => {
     const { theme } = useTheme()
     return (
         <div className='w-full bg-white dark:bg-backgroundDark2 py-[14px] px-[27px] flex lg:hidden justify-between fixed bottom-0'>
