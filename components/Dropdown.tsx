@@ -16,12 +16,13 @@ type Props = {
 
 const Dropdown = ({ text, toggleDropdown, dropDownOpen, selectedType, setSelectedType }: Props) => {
     const { theme } = useTheme()
+    console.log(text, 'text')
 
     return (
         <div className='flex bg-backgroundLight1 dark:bg-backgroundDark3 py-[5px] px-[10px] rounded items-center gap-[10px] cursor-pointer relative' onClick={toggleDropdown}>
             <p className='text-[9px] lg:text-[10px] capitalize'>{text}</p>
             <Image src={theme === 'dark' ? '/assets/dropdown-dark.png' : '/assets/dropdown.png'} alt='dropdown' width={12} height={12} />
-            {(dropDownOpen && text === 'Create post') && (
+            {(dropDownOpen && text.split(' ')[0] === 'Create') && (
                 <div className='absolute w-[213px] h-[264px] bg-white dark:bg-backgroundDark3 top-12 left-0 z-40 rounded-2xl p-5 drop-shadow-lg'>
                     <div className='flex flex-col gap-[10px]'>
                         {groups.map((item, index) => {

@@ -13,6 +13,7 @@ const TagBubble = ({ tag }: Props) => {
     const selectedTag = useSelector((state: RootState) => state.selectedTag.value)
 
     const toggleTag = () => {
+        if (window.location.pathname !== '/') return
         if (selectedTag === tag) dispatch(setSelectedTag(''))
         else dispatch(setSelectedTag(tag))
     }

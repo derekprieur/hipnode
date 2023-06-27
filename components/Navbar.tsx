@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux'
 import { MessageCard, NotificationCard, NotificationType, SearchInput, SettingsCard, Title } from './../components'
 import { navOptions, notificationTypes, notifications } from '../constants/constants'
 import { RootState } from '@redux/store'
+import { getAllMessages } from '@utils/getAllMessages'
 
 type Props = {
     setShowChatBox: React.Dispatch<React.SetStateAction<boolean>>
@@ -28,7 +29,7 @@ const Navbar = ({ setShowChatBox }: Props) => {
     const newMessage = useSelector((state: RootState) => state.newMessage.message)
 
     const toggleMessages = () => {
-        if (!showingMessages) getAllMessages()
+        if (!showingMessages) getAllMessages(setMessages)
         setShowingMessages(!showingMessages)
         setShowingNotifications(false)
         setShowingSettings(false)
@@ -49,12 +50,6 @@ const Navbar = ({ setShowChatBox }: Props) => {
     const handleSignOut = () => {
         signOut()
         router.push('/')
-    }
-
-    const getAllMessages = async () => {
-        const response = await fetch('http://localhost:3000/api/messages')
-        const data = await response.json()
-        setMessages(data)
     }
 
     useEffect(() => {

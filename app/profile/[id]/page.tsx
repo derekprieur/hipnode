@@ -2,12 +2,18 @@
 
 import React, { useEffect, useState } from 'react'
 import { useTheme } from 'next-themes'
+import { useDispatch } from 'react-redux'
+import Link from 'next/link'
+import Image from 'next/image'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 
 import { ChatBox, MeetupCard, Navbar, PodcastCard, PostCard, Title } from '../../../components'
-import Image from 'next/image'
 import { categories } from '../../../constants/profile'
 import { meetups } from '../../../constants/constants'
-import { useSession } from 'next-auth/react'
+import { seeMorePosts } from '@utils/seeMorePosts'
+import { setMessageThread, setUserToMessage } from '@redux/newMessageSlice'
+import { getAllMessages } from '@utils/getAllMessages'
 
 const Profile = ({ params }: { params: { id: string } }) => {
     const { theme } = useTheme()
@@ -19,7 +25,18 @@ const Profile = ({ params }: { params: { id: string } }) => {
     const [currentSelectedType, setCurrentSelectedType] = useState('Posts')
     const [showChatBox, setShowChatBox] = useState(false);
     const [podcasts, setPodcasts] = useState<Podcast[]>([])
+    const [displayCount, setDisplayCount] = useState(4)
+    const [messages, setMessages] = useState<Message[]>([])
+    const [message, setMessage] = useState<Message>()
     const { data: session } = useSession()
+    const router = useRouter()
+    const dispatch = useDispatch()
+
+    console.log(messages, 'messages')
+    console.log(userInfo, 'userInfo')
+    console.log(loggedInUserInfo, 'loggedInUserInfo')
+    console.log(message, 'message')
+    console.log(posts, 'posts')
 
     const getCreatorInfo = async () => {
         try {
@@ -35,7 +52,8 @@ const Profile = ({ params }: { params: { id: string } }) => {
         try {
             const response = await fetch("/api/posts");
             const data = await response.json();
-            setPosts(data);
+            const filteredPosts = data.filter((post: Post) => post.user === params.id)
+            setPosts(filteredPosts);
         } catch (error) {
             // handle error
         }
@@ -54,7 +72,6 @@ const Profile = ({ params }: { params: { id: string } }) => {
             // handle error
         }
     };
-
 
     const getLoggedInUserInfo = async () => {
         try {
@@ -101,7 +118,18 @@ const Profile = ({ params }: { params: { id: string } }) => {
         getPosts()
         getCreatorInfo()
         getPodcasts()
+        getAllMessages(setMessages)
     }, [])
+
+    useEffect(() => {
+        if (messages && userInfo._id && loggedInUserInfo?._id) {
+            const foundMessage = messages.find(message =>
+                (message.user1 === userInfo._id && message.user2 === loggedInUserInfo._id) ||
+                (message.user2 === userInfo._id && message.user1 === loggedInUserInfo._id)
+            );
+            setMessage(foundMessage);
+        }
+    }, [messages, userInfo._id, loggedInUserInfo?._id])
 
     useEffect(() => {
         getLoggedInUserInfo()
@@ -131,6 +159,8 @@ const Profile = ({ params }: { params: { id: string } }) => {
         }
     }
 
+    if (!userInfo.image || !message) return null
+
     return (
         <div className="bg-backgroundLight1 dark:bg-backgroundDark1 h-auto">
             <Navbar setShowChatBox={setShowChatBox} />
@@ -148,26 +178,38 @@ const Profile = ({ params }: { params: { id: string } }) => {
                         {(userInfo._id != loggedInUserInfo?._id) && <div className='flex gap-[10px] mt-5'>
                             <button className='py-[6px] w-[124px] rounded-md bg-backgroundAlt5 font-semibold text-white' onClick={handleFollow}>{isFollowed ? 'Following' : 'Follow'}</button>
                             <div className='bg-backgroundAlt4 dark:bg-backgroundDark3 flex items-center justify-center p-2 rounded-md shrink-0'>
-                                <Image src='/assets/profile-message.png' alt='message' width={20} height={20} className='shrink-0 cursor-pointer' onClick={() => setShowChatBox(true)} />
+                                <Image src='/assets/profile-message.png' alt='message' width={20} height={20} className='shrink-0 cursor-pointer' onClick={() => {
+                                    setShowChatBox(true)
+                                    dispatch(setMessageThread(message))
+                                    dispatch(setUserToMessage(userInfo))
+                                }} />
                             </div>
                         </div>}
                         <p className='font-semibold mt-5 dark:text-textDark2'>{userInfo.followers.length} Followers  •  0 Points</p>
                         <p className='font-semibold mt-5'>Following {userInfo.following.length}</p>
                         <div className='flex mt-[15px] gap-[14px] lg:flex-wrap'>
                             {followedUsers?.map((user) => (
-                                <Image key={user._id} src={user.image} alt='user' width={30} height={30} className='rounded-full' />
+                                <Image key={user._id} src={user.image} alt='user' width={30} height={30} className='rounded-full cursor-pointer' onClick={() => router.push(`/profile/${user._id}`)} />
                             ))}
                         </div>
                         <p className='mt-5 text-textLight3 text-center'>{userInfo?.description}</p>
                         <div className='flex lg:flex-col mt-5 items-center gap-[10px]'>
-                            <div className='flex items-center gap-[10px]'>
-                                <Image src={theme === 'dark' ? '/assets/world-dark.png' : '/assets/world.png'} alt='world' width={14} height={14} />
-                                <p className='lg:font-semibold'>www.derekprieur.dev</p>
-                            </div>
+                            <Link href='https://www.derekprieur.dev/' target='_blank'>
+                                <div className='flex items-center gap-[10px]'>
+                                    <Image src={theme === 'dark' ? '/assets/world-dark.png' : '/assets/world.png'} alt='world' width={14} height={14} />
+                                    <p className='lg:font-semibold'>www.derekprieur.dev</p>
+                                </div>
+                            </Link>
                             <div className='flex ml-[10px] lg:ml-0 gap-5'>
-                                <Image src={theme === 'dark' ? '/assets/twitter-outline-dark.png' : '/assets/twitter-outline.png'} alt='twitter' width={20} height={20} />
-                                <Image src={theme === 'dark' ? '/assets/facebook-outline-dark.png' : '/assets/facebook-outline.png'} alt='facebook' width={20} height={20} />
-                                <Image src={theme === 'dark' ? '/assets/instagram-outline-dark.png' : '/assets/instagram-outline.png'} alt='instagram' width={20} height={20} />
+                                <Link href='https://twitter.com/derekprieur_' target='_blank'>
+                                    <Image src={theme === 'dark' ? '/assets/twitter-outline-dark.png' : '/assets/twitter-outline.png'} alt='twitter' width={20} height={20} />
+                                </Link>
+                                <Link href='https://facebook.com' target='_blank'>
+                                    <Image src={theme === 'dark' ? '/assets/facebook-outline-dark.png' : '/assets/facebook-outline.png'} alt='facebook' width={20} height={20} />
+                                </Link>
+                                <Link href='https://instagram.com/derekprieur' target='_blank'>
+                                    <Image src={theme === 'dark' ? '/assets/instagram-outline-dark.png' : '/assets/instagram-outline.png'} alt='instagram' width={20} height={20} />
+                                </Link>
                             </div>
                         </div>
                         <div className='bg-backgroundLight3 h-[1px] w-[170px] mt-5' />
@@ -178,24 +220,30 @@ const Profile = ({ params }: { params: { id: string } }) => {
                 <div className='flex flex-col gap-5'>
                     <div className='bg-white dark:bg-backgroundDark2 flex p-[10px] lg:py-5 lg:px-[50px] gap-10 rounded-[14px] overflow-x-scroll hide-scrollbar lg:justify-between'>
                         {categories.map((category, index) => (
-                            <h2 key={category + index} className={`font-semibold cursor-pointer py-1 px-[10px] lg:text-lg ${category === currentSelectedType ? 'text-white bg-textAlt1 rounded-3xl' : 'lg:text-textLight3 lg:dark:text-textDark2'}`} onClick={() => setCurrentSelectedType(category)}>{category}</h2>
+                            <h2 key={category + index} className={`font-semibold py-1 px-[10px] lg:text-lg ${category === currentSelectedType ? 'text-white bg-textAlt1 rounded-3xl' : 'lg:text-textLight3 lg:dark:text-textDark2'}`}>{category}</h2>
                         ))}
                     </div>
                     <div className="flex flex-col gap-5">
-                        {posts.map((post, index) => (
+                        {posts.length === 0 &&
+                            <div className='p-[14px] lg:p-5 bg-white dark:bg-backgroundDark2 rounded-[10px] flex items-start'>
+                                <p className='text-textLight3'>No posts yet from {userInfo.username}</p>
+                            </div>
+                        }
+                        {posts.slice(0, displayCount).map((post, index) => (
                             <PostCard key={index} post={post} />
                         ))}
                     </div>
-                    <div className="flex gap-[14px] items-center">
-                        <p className="text-[10px] text-textLight3">See more</p>
-                        <Image
-                            src="/assets/arrow.png"
-                            alt="arrow"
-                            width={12}
-                            height={10}
-                            className="object-contain"
-                        />
-                    </div>
+                    {displayCount < posts.length &&
+                        <div className="flex gap-[14px] items-center cursor-pointer" onClick={() => seeMorePosts(setDisplayCount, displayCount)}>
+                            <p className="text-[10px] text-textLight3">See more</p>
+                            <Image
+                                src="/assets/arrow.png"
+                                alt="arrow"
+                                width={12}
+                                height={10}
+                                className="object-contain"
+                            />
+                        </div>}
                 </div>
                 <div className="bg-white dark:bg-backgroundDark2 rounded-[10px] p-5 lg:mt-0 lg:hidden">
                     <Title title="Meetups" />
@@ -237,7 +285,17 @@ const Profile = ({ params }: { params: { id: string } }) => {
                                 </div>
                             ))}
                         </div>
-                        <button className='mt-[10px] text-textAlt3 font-semibold text-sm'>see more</button>
+                        {displayCount < posts.length &&
+                            <div className="flex mt-3 gap-[14px] items-center cursor-pointer" onClick={() => seeMorePosts(setDisplayCount, displayCount)}>
+                                <p className="text-[10px] text-textLight3">See more</p>
+                                <Image
+                                    src="/assets/arrow.png"
+                                    alt="arrow"
+                                    width={12}
+                                    height={10}
+                                    className="object-contain"
+                                />
+                            </div>}
                     </div>
                 </div>
             </div>
