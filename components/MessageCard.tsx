@@ -15,8 +15,6 @@ const MessageCard = ({ message, setShowChatBox }: Props) => {
     const { data: session } = useSession();
     const dispatch = useDispatch()
 
-    console.log(user, 'user')
-
     const getMostRecentMessage = () => {
         if (!message.messages) return null
         const sortedMessages = message.messages.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())

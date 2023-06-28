@@ -16,6 +16,7 @@ import {
 } from "../constants/constants";
 import Link from "next/link";
 import { seeMorePosts } from "@utils/seeMorePosts";
+import { getUserInfo } from "@utils/getUserInfo";
 
 const Home = () => {
   const [showChatBox, setShowChatBox] = useState(false);
@@ -30,17 +31,6 @@ const Home = () => {
   const { data: session } = useSession();
   const title = useSelector((state: RootState) => state.post.title);
   const selectedTag = useSelector((state: RootState) => state.selectedTag.value);
-
-  const getCreatorInfo = async () => {
-    try {
-      //@ts-ignore
-      const response = await fetch(`/api/users/${session?.user?.id}`)
-      const data = await response.json()
-      setUserInfo(data)
-    } catch (error) {
-      // handle error
-    }
-  }
 
   const getPosts = async () => {
     try {
@@ -95,7 +85,8 @@ const Home = () => {
   }, [currentSortType])
 
   useEffect(() => {
-    getCreatorInfo();
+    // @ts-ignore
+    getUserInfo(session?.user?.id, setUserInfo);
   }, [session])
 
   useEffect(() => {

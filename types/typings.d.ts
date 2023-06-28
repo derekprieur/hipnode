@@ -23,6 +23,14 @@ interface User {
     followers: string[]
     _id: string
     createdAt: string
+    notifications: Notification[]
+}
+
+interface Notification {
+    type: string
+    userId: string
+    postId: string
+    time: string
 }
 
 interface Session {

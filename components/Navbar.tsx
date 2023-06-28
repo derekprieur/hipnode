@@ -11,6 +11,7 @@ import { MessageCard, NotificationCard, NotificationType, SearchInput, SettingsC
 import { navOptions, notificationTypes, notifications } from '../constants/constants'
 import { RootState } from '@redux/store'
 import { getAllMessages } from '@utils/getAllMessages'
+import { getUserInfo } from '@utils/getUserInfo'
 
 type Props = {
     setShowChatBox: React.Dispatch<React.SetStateAction<boolean>>
@@ -26,7 +27,10 @@ const Navbar = ({ setShowChatBox }: Props) => {
     const [showingNotifications, setShowingNotifications] = useState(false)
     const [showingSettings, setShowingSettings] = useState(false)
     const [messages, setMessages] = useState<Message[]>([])
+    const [userInfo, setUserInfo] = useState<User>()
     const newMessage = useSelector((state: RootState) => state.newMessage.message)
+
+    console.log(userInfo, 'userInfo')
 
     const toggleMessages = () => {
         if (!showingMessages) getAllMessages(setMessages)
@@ -51,6 +55,12 @@ const Navbar = ({ setShowChatBox }: Props) => {
         signOut()
         router.push('/')
     }
+
+    useEffect(() => {
+        // @ts-ignore
+        getUserInfo(session?.user.id, setUserInfo)
+    }, [session])
+
 
     useEffect(() => {
         setLogoSrc(
@@ -105,10 +115,10 @@ const Navbar = ({ setShowChatBox }: Props) => {
                 <div className='flex items-center lg:p-[10px] lg:bg-backgroundLight3 lg:dark:bg-backgroundDark3 lg:rounded-[7px] relative'>
                     <Image src={'/assets/bell.png'} alt={'bell'} width={20} height={20} className='object-contain flex dark:hidden cursor-pointer' onClick={toggleNotifications} />
                     <Image src={'/assets/bell-dark.png'} alt={'bell'} width={20} height={20} className='object-contain hidden dark:flex cursor-pointer' onClick={toggleNotifications} />
-                    {showingNotifications &&
+                    {(showingNotifications && userInfo) &&
                         <div className='bg-white dark:bg-backgroundDark3 absolute w-[335px] lg:w-[589px] top-12 rounded-lg p-5 lg:p-[30px] -left-[260px] lg:-left-[360px] z-50'>
                             <div className='flex justify-between items-center'>
-                                <h3 className='font-semibold lg:text-[26px]'>3 Notifications</h3>
+                                <h3 className='font-semibold lg:text-[26px]'>{userInfo.notifications.length} Notification{userInfo.notifications.length > 1 ? 's' : ''}</h3>
                                 <div className='flex p-[11px] bg-backgroundAlt4 dark:bg-backgroundDark2 text-textAlt2 gap-[11px] rounded-md font-semibold text-sm lg:text-base'>
                                     <Image src={'/assets/check.png'} alt={'check'} width={20} height={20} className='object-contain' />
                                     Mark All Read
@@ -122,7 +132,7 @@ const Navbar = ({ setShowChatBox }: Props) => {
                             </div>
                             <div className='border border-backgroundLight1 dark:border-backgroundDark2' />
                             <div className='flex flex-col mt-[19px] gap-5'>
-                                {notifications.map((notification, index) => (
+                                {userInfo.notifications.map((notification, index) => (
                                     <NotificationCard key={index} notification={notification} />
                                 ))}
                             </div>

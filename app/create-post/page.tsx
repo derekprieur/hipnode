@@ -29,8 +29,6 @@ const CreatePost = (props: Props) => {
     const [showChatBox, setShowChatBox] = useState(false)
     const title = useSelector((state: any) => state.post.title)
 
-    console.log(createDropdownOpen, 'createDropdownOpen')
-
     const toggleGroupDropdown = () => {
         setGroupDropdownOpen(!groupDropdownOpen)
         setCreateDropdownOpen(false)

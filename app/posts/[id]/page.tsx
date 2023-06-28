@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { additionalPosts, postContent, postDetails, reportOptions } from '../../../constants/post'
 import { useSession } from 'next-auth/react'
 import { getCommentCount } from '@utils/getCommentCount'
+import { getPostInfo } from '@utils/getPostInfo'
 
 const Posts = ({ params }: { params: { id: string } }) => {
     const [isFollowing, setIsFollowing] = useState(false)
@@ -21,21 +22,6 @@ const Posts = ({ params }: { params: { id: string } }) => {
 
     const handleReportToggle = () => {
         setReportModalShowing(prev => !prev)
-    }
-
-    const getPostInfo = async () => {
-        try {
-            const response = await fetch(`/api/posts/${params.id}`, {
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-            });
-
-            const data = await response.json();
-            setPostInfo(data);
-        } catch (error) {
-            // handle error
-        }
     }
 
     const getCreatorInfo = async () => {
@@ -123,7 +109,7 @@ const Posts = ({ params }: { params: { id: string } }) => {
             const data = await response.json();
 
             setComment('');
-            getPostInfo();
+            getPostInfo(params.id, setPostInfo);
 
         } catch (error) {
             console.error('Error:', error);
@@ -151,7 +137,7 @@ const Posts = ({ params }: { params: { id: string } }) => {
     }
 
     useEffect(() => {
-        getPostInfo();
+        getPostInfo(params.id, setPostInfo);
         incrementViewCount();
     }, [])
 

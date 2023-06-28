@@ -32,12 +32,6 @@ const Profile = ({ params }: { params: { id: string } }) => {
     const router = useRouter()
     const dispatch = useDispatch()
 
-    console.log(messages, 'messages')
-    console.log(userInfo, 'userInfo')
-    console.log(loggedInUserInfo, 'loggedInUserInfo')
-    console.log(message, 'message')
-    console.log(posts, 'posts')
-
     const getCreatorInfo = async () => {
         try {
             const response = await fetch(`/api/users/${params.id}`)

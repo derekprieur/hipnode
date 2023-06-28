@@ -22,9 +22,6 @@ const ChatBox = ({ setShowChatBox }: Props) => {
     const dispatch = useDispatch()
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
-    console.log(messageThread, 'messageThread')
-    console.log(userToBeMessaged, 'userToBeMessaged')
-
     const handleMessageSend = async () => {
         try {
             // @ts-ignore
