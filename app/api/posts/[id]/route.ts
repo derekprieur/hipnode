@@ -5,6 +5,7 @@ export const GET = async (req: any, {params}: any) => {
 try {
     connectToDB()
     const post = await Post.findById(params.id)
+    console.log(post, 'post')
     if ( post && post.comments) {
         post.comments = post.comments.reverse()
     }

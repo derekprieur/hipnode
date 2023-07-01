@@ -20,6 +20,16 @@ const userSchema = new Schema({
     following: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     favorites: [{ type: Schema.Types.ObjectId, ref: 'Post' }],
     followers: [{ type: Schema.Types.ObjectId, ref: 'User', default: [] }],
+    notifications: [
+        {
+            type: {type: String},
+            userId: { type: Schema.Types.ObjectId,  },
+            postId: { type: Schema.Types.ObjectId,  },
+            time: { type: Date, default: Date.now },
+            isRead: { type: Boolean, default: false },
+            commentId: { type: Schema.Types.ObjectId, default: null }, 
+        }
+    ]
 })
 
 const User = models.User || model('User', userSchema);

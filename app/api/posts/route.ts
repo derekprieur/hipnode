@@ -28,6 +28,7 @@ export const GET = async (req: any) => {
     try {
         await connectToDB();
         const posts = await Post.find({});
+        console.log(posts, 'posts')
         return new Response(JSON.stringify(posts), {
             status: 200,
         })

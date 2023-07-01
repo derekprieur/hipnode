@@ -5,8 +5,6 @@ export const PUT = async (req: any) => {
 try {
     connectToDB()
     const { comment, postId, userId, replyingTo, commentBeingRepliedToId } = await req.json()
-    console.log(replyingTo, 'replyingTo')
-    console.log(commentBeingRepliedToId, 'commentBeingRepliedToId')
     const post = await Post.findById(postId)
     const newComment = {
         user: userId,
@@ -19,6 +17,6 @@ try {
         status: 200,
     })
 } catch (error) {
-    console.log(error, 'error')
+   // handle error
 }
 }

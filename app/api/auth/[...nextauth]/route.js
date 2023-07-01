@@ -44,7 +44,6 @@ const handler = NextAuth({
 
                 return true;
             } catch (error) {
-                console.log(error)
                 return false;
             }
         },
@@ -53,7 +52,6 @@ const handler = NextAuth({
                 await signOut({ callbackUrl: "/" });
                 return true;
             } catch (error) {
-                console.log(error)
                 return false;
             }
         }

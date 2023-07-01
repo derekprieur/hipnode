@@ -10,6 +10,7 @@ type Props = {
 const NotificationCard = ({ notification }: Props) => {
     const [userInfo, setUserInfo] = useState<User>()
     const [post, setPost] = useState<Post>()
+    const [comment, setComment] = useState<Comment>()
     const [formattedDate, setFormattedDate] = useState<string>()
 
     const formatDate = () => {
@@ -18,6 +19,12 @@ const NotificationCard = ({ notification }: Props) => {
             return date.toLocaleString('en-US', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', hour12: true })
         }
         return "Invalid Date"
+    }
+
+    const findComment = () => {
+        if (post) {
+            return post.comments.find(comment => comment._id === notification.commentId)
+        }
     }
 
     useEffect(() => {
@@ -30,10 +37,15 @@ const NotificationCard = ({ notification }: Props) => {
         getPostInfo(notification.postId, setPost)
     }, [notification])
 
+    useEffect(() => {
+        setComment(findComment())
+    }, [post])
+
     console.log(notification, 'notification')
-    console.log(userInfo, 'userInfo234')
+    console.log(userInfo, 'userInfo')
     console.log(formattedDate, 'formattedDate')
     console.log(post, 'post')
+    console.log(comment, 'comment')
 
     if (!userInfo) return null
 
@@ -47,9 +59,9 @@ const NotificationCard = ({ notification }: Props) => {
                 </div>
             </div>
             <div className='flex flex-col'>
-                <p className='font-semibold text-xs lg:text-sm text-textLight3 lg:text-textLight1 lg:dark:text-textLight3'><span className='text-sm lg:text-lg'>{userInfo.username}</span> commented on your post</p>
-                {notification.type === 'comment' && <div className='bg-backgroundLight1 dark:bg-backgroundDark2 rounded py-4 lg:py-[13px] px-[10px] lg:px-[14px] mt-2 font-normal text-xs text-textLight3 lg:text-textLight1 lg:dark:text-textLight3 lg:text-base'>"Great ebook & giveaway!"</div>}
-                <p className='mt-2 text-textAlt1 font-semibold text-sm lg:text-lg'>{notification.title}</p>
+                <p className='font-semibold text-xs lg:text-sm text-textLight3 lg:text-textLight1 lg:dark:text-textLight3'><span className='text-sm lg:text-lg'>{userInfo.username}</span> {notification.type === 'comment' ? 'commented on' : 'liked'} your post</p>
+                {notification.type === 'comment' && <div className='bg-backgroundLight1 dark:bg-backgroundDark2 rounded py-4 lg:py-[13px] px-[10px] lg:px-[14px] mt-2 font-normal text-xs text-textLight3 lg:text-textLight1 lg:dark:text-textLight3 lg:text-base'>"{comment?.content}"</div>}
+                <p className='mt-2 text-textAlt1 font-semibold text-sm lg:text-lg'>{post?.title}</p>
                 <p className='mt-1 text-textLight3 text-[10px] lg:text-textLight1 lg:text-sm lg:dark:text-textLight3'>{formattedDate}</p>
             </div>
         </div>

@@ -28,6 +28,7 @@ const Navbar = ({ setShowChatBox }: Props) => {
     const [showingSettings, setShowingSettings] = useState(false)
     const [messages, setMessages] = useState<Message[]>([])
     const [userInfo, setUserInfo] = useState<User>()
+    const [selectedNotificationType, setSelectedNotificationType] = useState(notificationTypes[0].type)
     const newMessage = useSelector((state: RootState) => state.newMessage.message)
 
     console.log(userInfo, 'userInfo')
@@ -118,7 +119,7 @@ const Navbar = ({ setShowChatBox }: Props) => {
                     {(showingNotifications && userInfo) &&
                         <div className='bg-white dark:bg-backgroundDark3 absolute w-[335px] lg:w-[589px] top-12 rounded-lg p-5 lg:p-[30px] -left-[260px] lg:-left-[360px] z-50'>
                             <div className='flex justify-between items-center'>
-                                <h3 className='font-semibold lg:text-[26px]'>{userInfo.notifications.length} Notification{userInfo.notifications.length > 1 ? 's' : ''}</h3>
+                                <h3 className='font-semibold lg:text-[26px]'>{userInfo.notification && userInfo?.notification?.length} Notification{userInfo.notifications.length > 1 ? 's' : ''}</h3>
                                 <div className='flex p-[11px] bg-backgroundAlt4 dark:bg-backgroundDark2 text-textAlt2 gap-[11px] rounded-md font-semibold text-sm lg:text-base'>
                                     <Image src={'/assets/check.png'} alt={'check'} width={20} height={20} className='object-contain' />
                                     Mark All Read
@@ -127,12 +128,12 @@ const Navbar = ({ setShowChatBox }: Props) => {
                             <div className='border border-backgroundLight1 dark:border-backgroundDark2 my-5 lg:my-[30px]' />
                             <div className='flex overflow-x-scroll hide-scrollbar gap-[35px] mb-[11px]'>
                                 {notificationTypes.map((notificationType, index) => (
-                                    <NotificationType key={index} notificationType={notificationType} />
+                                    <NotificationType key={index} notificationType={notificationType} selectedNotificationType={selectedNotificationType} setSelectedNotificationType={setSelectedNotificationType} />
                                 ))}
                             </div>
                             <div className='border border-backgroundLight1 dark:border-backgroundDark2' />
                             <div className='flex flex-col mt-[19px] gap-5'>
-                                {userInfo.notifications.map((notification, index) => (
+                                {userInfo.notification.map((notification, index) => (
                                     <NotificationCard key={index} notification={notification} />
                                 ))}
                             </div>

@@ -3,9 +3,9 @@ import { connectToDB } from "@utils/database";
 
 export const GET = async (req: any, {params}: any) => {
     try {
-        console.log(params.id, 'params.id')
         await connectToDB();
         const user = await User.findById(params.id);
+
         return new Response(JSON.stringify(user), {
             status: 200,
         })
@@ -22,6 +22,7 @@ export const PUT = async (req: any, {params}: any) => {
     try {
         await connectToDB();
         const user = await User.findById(params.id);
+        console.log(user, 'user')
         const followUser = await User.findById(followId);
 
         if (!user || !followUser) {
