@@ -17,7 +17,6 @@ export const POST = async (req: any) => {
             status: 201,
         })
     } catch (error) {
-        console.log(error);
         return new Response("Failed to create a new prompt", {
             status: 500,
         })
@@ -28,12 +27,10 @@ export const GET = async (req: any) => {
     try {
         await connectToDB();
         const posts = await Post.find({});
-        console.log(posts, 'posts')
         return new Response(JSON.stringify(posts), {
             status: 200,
         })
     } catch (error) {
-        console.log(error);
         return new Response("Failed to get all posts", {
             status: 500,
         })

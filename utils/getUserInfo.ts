@@ -3,9 +3,12 @@ export const getUserInfo = async (userId: string, setUserInfo: React.Dispatch<Re
       const response = await fetch(`/api/users/${userId}`)
       const data = await response.json()
       if (data != undefined) {
-          setUserInfo(data)
+        if(data.notifications) {
+          data.notifications = data.notifications.reverse()
         }
-    } catch (error) {
+      }
+          setUserInfo(data)
+        } catch (error) {
       // handle error
     }
   }

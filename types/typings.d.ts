@@ -23,7 +23,7 @@ interface User {
     followers: string[]
     _id: string
     createdAt: string
-    notification: Notification[]
+    notifications: Notification[]
 }
 
 interface Notification {
@@ -32,6 +32,7 @@ interface Notification {
     postId: string
     time: string
     commentId: string
+    isRead: boolean
 }
 
 interface Session {

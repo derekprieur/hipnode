@@ -18,11 +18,9 @@ export const GET = async (req: any, {params}: any) => {
 
 export const PUT = async (req: any, {params}: any) => {
     const { followId } = await req.json();
-    console.log('test')
     try {
         await connectToDB();
         const user = await User.findById(params.id);
-        console.log(user, 'user')
         const followUser = await User.findById(followId);
 
         if (!user || !followUser) {
@@ -41,7 +39,6 @@ export const PUT = async (req: any, {params}: any) => {
 
         return new Response(JSON.stringify("Operation performed successfully"), { status: 200 });
     } catch (error) {
-        console.log(error);
         return new Response("Failed to follow user", { status: 500 });
     }
 }

@@ -13,6 +13,8 @@ const SettingsCard = (props: Props) => {
     const { theme } = useTheme();
     const { data: session }: any = useSession();
 
+    console.log(session, 'session');
+
     return (
         <div className='flex flex-col gap-5'>
             <div className='flex gap-[14px] cursor-pointer' onClick={() => router.push(`/profile/${session?.user?.id}`)}>

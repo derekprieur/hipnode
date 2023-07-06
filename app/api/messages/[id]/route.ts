@@ -5,13 +5,11 @@ export const PUT = async (req: any, { params }: any) => {
     try {
         await connectToDB();
         const {sender, message, date} = await req.json();
-        console.log(sender, 'sender')
         const newMessage = {
             sender,
             message,
             date: Date.now(),
         }
-        console.log(params.id, 'params.id')
         const messageThread = await Message.findById(params.id);
         messageThread.messages.push(newMessage);
         await messageThread.save();
@@ -19,7 +17,6 @@ export const PUT = async (req: any, { params }: any) => {
             status: 200,
         })
     } catch (error) {
-        console.log(error, 'error')
         return new Response("Failed to create message", {
             status: 500,
         })
@@ -34,6 +31,6 @@ export const GET = async (req: any, { params }: any) => {
             status: 200,
         })
     } catch (error) {
-        console.log(error, 'error')
+        // handle error
     }
 };

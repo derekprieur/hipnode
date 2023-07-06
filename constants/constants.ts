@@ -1,4 +1,7 @@
 import {BsGoogle, BsDiscord, BsGithub} from 'react-icons/bs'
+import SvgHeart from '../components/SvgHeart'
+import SvgComment from '../components/SvgComment'
+import SvgMention from '@components/SvgMention';
 
 export const features = [
   {
@@ -305,15 +308,15 @@ export const notificationTypes = [
   },
   {
     type: "Reactions",
-    image: "/assets/reaction.png",
+    image: SvgHeart,
   },
   {
     type: "Comments",
-    image: "/assets/comment.png",
+    image: SvgComment,
   },
   {
     type: "Mentions",
-    image: "/assets/mention.png",
+    image: SvgMention,
   }
 ]
 

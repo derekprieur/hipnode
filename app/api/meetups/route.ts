@@ -33,7 +33,6 @@ export const GET = async (req: any) => {
             status: 200,
         })
     } catch (error) {
-        console.log(error);
         return new Response("Failed to fetch meetups", {
             status: 500,
         })

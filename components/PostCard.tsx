@@ -132,7 +132,7 @@ const PostCard = ({ post }: Props) => {
                         </Link>
                         {creatorInfo.image && <Image src={creatorInfo?.image} alt='user' width={30} height={30} className='object-contain rounded-full shrink-0 flex lg:hidden cursor-pointer' onClick={() => router.push(`/profile/${creatorInfo._id}`)} />}
                         <div className={`hidden lg:flex ${favorited ? 'bg-backgroundAlt3 dark:bg-backgroundDark3' : 'bg-backgroundLight3 dark:bg-backgroundDark3'} py-[6px] px-[5px] rounded-full cursor-pointer`} onClick={updateFavoritePosts}>
-                            <Image src={favorited ? '/assets/heart-full.png' : '/assets/heart.png'} alt='heart' width={20} height={20} className='object-contain shrink-0' />
+                            <Image src={favorited ? '/assets/heart-liked.png' : '/assets/heart.png'} alt='heart' width={20} height={20} className='object-contain shrink-0' />
                         </div>
                     </div>
                     <div className='flex gap-[10px] mt-[10px]'>

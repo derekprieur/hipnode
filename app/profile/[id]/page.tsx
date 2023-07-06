@@ -21,7 +21,7 @@ const Profile = ({ params }: { params: { id: string } }) => {
     const [followedUsers, setFollowedUsers] = useState<User[]>([])
     const [posts, setPosts] = useState<Post[]>([])
     const [loggedInUserInfo, setLoggedInUserInfo] = useState<User>()
-    const [userInfo, setUserInfo] = useState<User>({ name: '', username: '', email: '', image: '', description: '', following: [], favorites: [], followers: [], _id: '', createdAt: '' })
+    const [userInfo, setUserInfo] = useState<User>({ name: '', username: '', email: '', image: '', description: '', following: [], favorites: [], followers: [], _id: '', createdAt: '', notifications: [] })
     const [currentSelectedType, setCurrentSelectedType] = useState('Posts')
     const [showChatBox, setShowChatBox] = useState(false);
     const [podcasts, setPodcasts] = useState<Podcast[]>([])
@@ -32,12 +32,18 @@ const Profile = ({ params }: { params: { id: string } }) => {
     const router = useRouter()
     const dispatch = useDispatch()
 
+    console.log(userInfo, 'userInfo')
+    console.log(loggedInUserInfo, 'loggedInUserInfo')
+
     const getCreatorInfo = async () => {
+        console.log(params.id, 'params.id')
         try {
             const response = await fetch(`/api/users/${params.id}`)
             const data = await response.json()
+            console.log(data, 'data')
             setUserInfo(data)
         } catch (error) {
+            console.log(error, 'error')
             // handle error
         }
     }
@@ -54,6 +60,8 @@ const Profile = ({ params }: { params: { id: string } }) => {
     }
 
     const getFollowedUsers = async () => {
+        console.log(session, 'session')
+        if (session == undefined) return
         try {
             const userPromises: Promise<User>[] = userInfo.following.map(async (userId: string) => {
                 const response = await fetch(`/api/users/${userId}`);
@@ -69,6 +77,7 @@ const Profile = ({ params }: { params: { id: string } }) => {
 
     const getLoggedInUserInfo = async () => {
         try {
+            console.log(session?.user?.id, 'session?.user?.id')
             // @ts-ignore
             const response = await fetch(`/api/users/${session?.user?.id}`)
             const data = await response.json()
@@ -79,6 +88,7 @@ const Profile = ({ params }: { params: { id: string } }) => {
                 setIsFollowed(false)
             }
         } catch (error) {
+            console.log(error, 'error')
             // handle error
         }
     }
@@ -100,20 +110,25 @@ const Profile = ({ params }: { params: { id: string } }) => {
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         // return diffDay + ' days ago'
         if (diffDays > 365) {
-            return Math.floor(diffDays / 365) + ' years ago'
+            return Math.floor(diffDays / 365) + `${Math.floor(diffDays / 365) === 1 ? ' year ago' : ' years ago'}`
         }
         if (diffDays > 30) {
-            return Math.floor(diffDays / 30) + ' months ago'
+            return Math.floor(diffDays / 30) + `${Math.floor(diffDays / 30) === 1 ? ' month ago' : ' months ago'}`
         }
         return diffDays + ' days ago'
     }
 
     useEffect(() => {
         getPosts()
-        getCreatorInfo()
         getPodcasts()
         getAllMessages(setMessages)
     }, [])
+
+    useEffect(() => {
+        if (params.id) {
+            getCreatorInfo()
+        }
+    }, [params.id])
 
     useEffect(() => {
         if (messages && userInfo._id && loggedInUserInfo?._id) {
@@ -127,7 +142,7 @@ const Profile = ({ params }: { params: { id: string } }) => {
 
     useEffect(() => {
         getLoggedInUserInfo()
-    }, [session])
+    }, [session, params.id])
 
     useEffect(() => {
         getFollowedUsers()
@@ -153,7 +168,10 @@ const Profile = ({ params }: { params: { id: string } }) => {
         }
     }
 
-    if (!userInfo.image || !message) return null
+    console.log(userInfo, 'userInfo')
+    console.log(message, 'message')
+
+    if (!userInfo.image) return null
 
     return (
         <div className="bg-backgroundLight1 dark:bg-backgroundDark1 h-auto">

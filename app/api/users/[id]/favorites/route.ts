@@ -22,6 +22,6 @@ export const PUT = async (req: any, res: any) => {
     return new Response(JSON.stringify("Successfully favorited post"), { status: 200 })
 
  } catch (error) {
-    console.log(error)
+   // handle error
  }
 }

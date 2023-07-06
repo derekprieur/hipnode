@@ -29,9 +29,12 @@ const Navbar = ({ setShowChatBox }: Props) => {
     const [messages, setMessages] = useState<Message[]>([])
     const [userInfo, setUserInfo] = useState<User>()
     const [selectedNotificationType, setSelectedNotificationType] = useState(notificationTypes[0].type)
+    const [unreadNotifications, setUnreadNotifications] = useState<boolean>(false)
+    const [notifications, setNotifications] = useState<Notification[]>([])
     const newMessage = useSelector((state: RootState) => state.newMessage.message)
 
-    console.log(userInfo, 'userInfo')
+    console.log(selectedNotificationType, 'selectedNotificationType')
+    console.log(notifications, 'notifications')
 
     const toggleMessages = () => {
         if (!showingMessages) getAllMessages(setMessages)
@@ -57,11 +60,46 @@ const Navbar = ({ setShowChatBox }: Props) => {
         router.push('/')
     }
 
+    const setNotificationsToRead = async () => {
+        try {
+            // @ts-ignore
+            const res = await fetch(`/api/users/${session?.user.id}/notifications`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            })
+            const data = await res.json()
+            setUserInfo(data)
+        } catch (error) {
+            // handle error
+        }
+    }
+
+    const checkForUnreadNotifications = () => {
+        const unread = userInfo?.notifications?.some((notification: any) => notification.isRead === false)
+        setUnreadNotifications(unread || false)
+    }
+
+    const filterNotifications = () => {
+        if (selectedNotificationType === 'All notifications') return setNotifications(userInfo?.notifications || [])
+        if (selectedNotificationType === 'Reactions') return setNotifications(userInfo?.notifications?.filter((notification: any) => notification.type === 'like') || [])
+        if (selectedNotificationType === 'Comments') return setNotifications(userInfo?.notifications?.filter((notification: any) => notification.type === 'comment') || [])
+        if (selectedNotificationType === 'Mentions') return setNotifications(userInfo?.notifications?.filter((notification: any) => notification.type === 'mention') || [])
+    }
+
+    useEffect(() => {
+        checkForUnreadNotifications()
+    }, [userInfo])
+
     useEffect(() => {
         // @ts-ignore
         getUserInfo(session?.user.id, setUserInfo)
     }, [session])
 
+    useEffect(() => {
+        setNotifications(userInfo?.notifications || [])
+    }, [userInfo])
 
     useEffect(() => {
         setLogoSrc(
@@ -71,6 +109,10 @@ const Navbar = ({ setShowChatBox }: Props) => {
             theme === "dark" ? "/assets/logo.png" : "/assets/logo-light.png"
         );
     }, [theme]);
+
+    useEffect(() => {
+        filterNotifications()
+    }, [selectedNotificationType])
 
 
     if (!logoSrc || !largeLogoSrc) {
@@ -114,14 +156,14 @@ const Navbar = ({ setShowChatBox }: Props) => {
                     }
                 </div>
                 <div className='flex items-center lg:p-[10px] lg:bg-backgroundLight3 lg:dark:bg-backgroundDark3 lg:rounded-[7px] relative'>
-                    <Image src={'/assets/bell.png'} alt={'bell'} width={20} height={20} className='object-contain flex dark:hidden cursor-pointer' onClick={toggleNotifications} />
-                    <Image src={'/assets/bell-dark.png'} alt={'bell'} width={20} height={20} className='object-contain hidden dark:flex cursor-pointer' onClick={toggleNotifications} />
+                    <Image src={unreadNotifications ? '/assets/bell-notification.png' : '/assets/bell.png'} alt={'bell'} width={20} height={20} className='object-contain flex dark:hidden cursor-pointer' onClick={toggleNotifications} />
+                    <Image src={unreadNotifications ? '/assets/bell-dark-notification.png' : '/assets/bell-dark.png'} alt={'bell'} width={20} height={20} className='object-contain hidden dark:flex cursor-pointer' onClick={toggleNotifications} />
                     {(showingNotifications && userInfo) &&
                         <div className='bg-white dark:bg-backgroundDark3 absolute w-[335px] lg:w-[589px] top-12 rounded-lg p-5 lg:p-[30px] -left-[260px] lg:-left-[360px] z-50'>
                             <div className='flex justify-between items-center'>
-                                <h3 className='font-semibold lg:text-[26px]'>{userInfo.notification && userInfo?.notification?.length} Notification{userInfo.notifications.length > 1 ? 's' : ''}</h3>
-                                <div className='flex p-[11px] bg-backgroundAlt4 dark:bg-backgroundDark2 text-textAlt2 gap-[11px] rounded-md font-semibold text-sm lg:text-base'>
-                                    <Image src={'/assets/check.png'} alt={'check'} width={20} height={20} className='object-contain' />
+                                <h3 className='font-semibold lg:text-[26px]'>{userInfo.notifications && userInfo?.notifications?.length} Notification{userInfo.notifications.length > 1 ? 's' : ''}</h3>
+                                <div className={`flex p-[11px] gap-[11px] rounded-md font-semibold text-sm lg:text-base ${unreadNotifications ? 'bg-backgroundAlt4 dark:bg-backgroundDark2 text-textAlt2 cursor-pointer' : 'bg-backgroundLight1 dark:bg-backgroundDark2 text-textLight3'}`} onClick={setNotificationsToRead}>
+                                    <Image src={unreadNotifications ? '/assets/check.png' : `/assets/check-grey.png`} alt={'check'} width={20} height={20} className='object-contain' />
                                     Mark All Read
                                 </div>
                             </div>
@@ -133,9 +175,9 @@ const Navbar = ({ setShowChatBox }: Props) => {
                             </div>
                             <div className='border border-backgroundLight1 dark:border-backgroundDark2' />
                             <div className='flex flex-col mt-[19px] gap-5'>
-                                {userInfo.notification.map((notification, index) => (
+                                {notifications.length > 0 ? notifications?.map((notification, index) => (
                                     <NotificationCard key={index} notification={notification} />
-                                ))}
+                                )) : <p className='text-textLight3 dark:text-textDark2'>No notifications currently</p>}
                             </div>
                         </div>
                     }
@@ -151,7 +193,7 @@ const Navbar = ({ setShowChatBox }: Props) => {
                     <Image src={'/assets/arrow-down.png'} alt={'arrow-down'} width={20} height={20} className='object-contain hidden lg:flex cursor-pointer' onClick={handleSignOut} />
                 </div> : <button className='flex bg-black text-white font-semibold text-sm px-5 py-2 rounded-md' onClick={() => router.push('/signin')}>Login</button>}
             </div>
-        </div>
+        </div >
     )
 }
 
