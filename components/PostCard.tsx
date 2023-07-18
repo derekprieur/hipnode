@@ -94,14 +94,13 @@ const PostCard = ({ post }: Props) => {
         const date2 = new Date()
         const diffTime = Math.abs(date2.getTime() - date1.getTime());
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        // return diffDay + ' days ago'
         if (diffDays > 365) {
-            return Math.floor(diffDays / 365) + ' years ago'
+            return Math.floor(diffDays / 365) + `${Math.floor(diffDays / 365) === 1 ? ' year ago' : ' years ago'}`
         }
         if (diffDays > 30) {
-            return Math.floor(diffDays / 30) + ' months ago'
+            return Math.floor(diffDays / 30) + `${Math.floor(diffDays / 30) === 1 ? ' month ago' : ' months ago'}`
         }
-        return diffDays + ' days ago'
+        return diffDays + `${diffDays === 1 ? ' day ago' : ' days ago'}`
     }
 
     useEffect(() => {
