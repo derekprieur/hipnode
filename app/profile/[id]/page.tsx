@@ -112,7 +112,8 @@ const Profile = ({ params }: { params: { id: string } }) => {
     useEffect(() => {
         getPosts()
         getPodcasts()
-        // getAllMessages(setMessages)
+        getAllMessages(setMessages)
+        console.log(messages, 'messages')
     }, [])
 
     useEffect(() => {
