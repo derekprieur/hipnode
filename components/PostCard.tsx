@@ -14,7 +14,7 @@ type Props = {
 const PostCard = ({ post }: Props) => {
     const [favorited, setFavorited] = useState(false)
     const [userInfo, setUserInfo] = useState<User>({
-        email: '', name: '', description: '', following: [], image: '', _id: '', favorites: [], username: '', followers: [], createdAt: ''
+        email: '', name: '', description: '', following: [], image: '', _id: '', favorites: [], username: '', followers: [], createdAt: '', notifications: []
     })
     const [creatorInfo, setCreatorInfo] = useState({
         username: '',
