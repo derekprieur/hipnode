@@ -113,7 +113,6 @@ const Profile = ({ params }: { params: { id: string } }) => {
         getPosts()
         getPodcasts()
         getAllMessages(setMessages)
-        console.log(messages, 'messages')
     }, [])
 
     useEffect(() => {
@@ -179,11 +178,13 @@ const Profile = ({ params }: { params: { id: string } }) => {
                         {(userInfo._id != loggedInUserInfo?._id) && <div className='flex gap-[10px] mt-5'>
                             <button className='py-[6px] w-[124px] rounded-md bg-backgroundAlt5 font-semibold text-white' onClick={handleFollow}>{isFollowed ? 'Following' : 'Follow'}</button>
                             <div className='bg-backgroundAlt4 dark:bg-backgroundDark3 flex items-center justify-center p-2 rounded-md shrink-0'>
-                                <Image src='/assets/profile-message.png' alt='message' width={20} height={20} className='shrink-0 cursor-pointer' onClick={() => {
-                                    setShowChatBox(true)
-                                    dispatch(setMessageThread(message))
-                                    dispatch(setUserToMessage(userInfo))
-                                }} />
+                                {message && (
+                                    <Image src='/assets/profile-message.png' alt='message' width={20} height={20} className='shrink-0 cursor-pointer' onClick={() => {
+                                        setShowChatBox(true)
+                                        dispatch(setMessageThread(message))
+                                        dispatch(setUserToMessage(userInfo))
+                                    }} />
+                                )}
                             </div>
                         </div>}
                         <p className='font-semibold mt-5 dark:text-textDark2'>{userInfo.followers.length} Followers  •  0 Points</p>
