@@ -32,18 +32,12 @@ const Profile = ({ params }: { params: { id: string } }) => {
     const router = useRouter()
     const dispatch = useDispatch()
 
-    console.log(userInfo, 'userInfo')
-    console.log(loggedInUserInfo, 'loggedInUserInfo')
-
     const getCreatorInfo = async () => {
-        console.log(params.id, 'params.id')
         try {
             const response = await fetch(`/api/users/${params.id}`)
             const data = await response.json()
-            console.log(data, 'data')
             setUserInfo(data)
         } catch (error) {
-            console.log(error, 'error')
             // handle error
         }
     }
@@ -60,7 +54,6 @@ const Profile = ({ params }: { params: { id: string } }) => {
     }
 
     const getFollowedUsers = async () => {
-        console.log(session, 'session')
         if (session == undefined) return
         try {
             const userPromises: Promise<User>[] = userInfo.following.map(async (userId: string) => {
@@ -77,7 +70,6 @@ const Profile = ({ params }: { params: { id: string } }) => {
 
     const getLoggedInUserInfo = async () => {
         try {
-            console.log(session?.user?.id, 'session?.user?.id')
             // @ts-ignore
             const response = await fetch(`/api/users/${session?.user?.id}`)
             const data = await response.json()
@@ -88,7 +80,6 @@ const Profile = ({ params }: { params: { id: string } }) => {
                 setIsFollowed(false)
             }
         } catch (error) {
-            console.log(error, 'error')
             // handle error
         }
     }
@@ -121,7 +112,7 @@ const Profile = ({ params }: { params: { id: string } }) => {
     useEffect(() => {
         getPosts()
         getPodcasts()
-        getAllMessages(setMessages)
+        // getAllMessages(setMessages)
     }, [])
 
     useEffect(() => {
@@ -167,9 +158,6 @@ const Profile = ({ params }: { params: { id: string } }) => {
             // handle error
         }
     }
-
-    console.log(userInfo, 'userInfo')
-    console.log(message, 'message')
 
     if (!userInfo.image) return null
 
