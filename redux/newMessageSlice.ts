@@ -9,7 +9,7 @@ interface NewMessageState {
   const initialState: NewMessageState = {
     message: '',
     messageThread: {user1: '', user2: '', _id: '', messages: [{sender: '', message: '', date: '', _id: ''}]},
-    userToMessage: { name: '', username: '', email: '', image: '', description: '', following: [''], favorites: [''], followers: [''], _id: '', createdAt: '',
+    userToMessage: { name: '', username: '', email: '', image: '', description: '', following: [''], favorites: [''], followers: [''], _id: '', createdAt: '', notifications: []
     }
   }
 
